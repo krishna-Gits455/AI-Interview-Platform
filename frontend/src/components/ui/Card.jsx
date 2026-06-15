@@ -1,10 +1,12 @@
 export default function Card({
   children,
   className = "",
+  ...props
 }) {
   return (
     <div
-      className={`p-6 rounded-xl border border-slate-800 bg-slate-900 ${className}`}
+      className={`bg-slate-900 border border-slate-800 rounded-xl p-6 ${className}`}
+      {...props}
     >
       {children}
     </div>

@@ -1,6 +1,8 @@
 import Card from "../../../components/ui/Card";
 
-export default function QuickActions() {
+export default function QuickActions({
+  onCreateInterview,
+}) {
   return (
     <div className="grid md:grid-cols-2 gap-6">
 
@@ -14,7 +16,10 @@ export default function QuickActions() {
         </p>
       </Card>
 
-      <Card className="min-h-[140px] hover:border-indigo-500 hover:scale-[1.01] transition-all cursor-pointer">
+      <Card
+        onClick={onCreateInterview}
+        className="min-h-[140px] hover:border-indigo-500 hover:scale-[1.01] transition-all cursor-pointer"
+      >
         <h3 className="text-lg font-semibold">
           Create Interview
         </h3>
