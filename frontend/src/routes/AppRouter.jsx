@@ -7,6 +7,7 @@ import Dashboard from "../pages/Dashboard";
 import Room from "../pages/Room";
 import AIInterview from "../pages/AIInterview";
 import Report from "../pages/Report";
+import DesignSystem from "../pages/DesignSystem";
 
 export default function AppRouter() {
   return (
@@ -18,6 +19,7 @@ export default function AppRouter() {
       <Route path="/room/:roomId" element={<Room />} />
       <Route path="/ai-interview" element={<AIInterview />} />
       <Route path="/report/:reportId" element={<Report />} />
+      <Route path="/design-system" element={<DesignSystem />} />
     </Routes>
   );
 }
