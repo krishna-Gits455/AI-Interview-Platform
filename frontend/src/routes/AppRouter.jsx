@@ -8,6 +8,7 @@ import Room from "../pages/Room";
 import AIInterview from "../pages/AIInterview";
 import Report from "../pages/Report";
 import DesignSystem from "../pages/DesignSystem";
+import ProtectedRoute from "./ProtectedRoute";
 
 export default function AppRouter() {
   return (
@@ -15,10 +16,41 @@ export default function AppRouter() {
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-      <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="/room/:roomId" element={<Room />} />
-      <Route path="/ai-interview" element={<AIInterview />} />
-      <Route path="/report/:reportId" element={<Report />} />
+      <Route
+  path="/dashboard"
+  element={
+    <ProtectedRoute>
+      <Dashboard />
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/room/:roomId"
+  element={
+    <ProtectedRoute>
+      <Room />
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/ai-interview"
+  element={
+    <ProtectedRoute>
+      <AIInterview />
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/report/:reportId"
+  element={
+    <ProtectedRoute>
+      <Report />
+    </ProtectedRoute>
+  }
+/>
       <Route path="/design-system" element={<DesignSystem />} />
     </Routes>
   );

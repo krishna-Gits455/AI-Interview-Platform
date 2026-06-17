@@ -5,9 +5,33 @@ import {
   LogOut,
 } from "lucide-react";
 
-import { Link } from "react-router-dom";
+import {
+  Link,
+  useNavigate,
+} from "react-router-dom";
+
+import useAuthStore from "../../store/authStore";
 
 export default function Sidebar() {
+
+  const navigate = useNavigate();
+
+const logout =
+  useAuthStore(
+    (state) => state.logout
+  );
+
+const handleLogout =
+  async () => {
+    try {
+      await logout();
+
+      navigate("/login");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <aside className="w-72 border-r border-slate-800 flex flex-col">
 
@@ -47,7 +71,10 @@ export default function Sidebar() {
       </nav>
 
       <div className="p-4 border-t border-slate-800">
-        <button className="flex items-center gap-3 px-3 py-2 w-full rounded-lg hover:bg-slate-800">
+        <button
+  onClick={handleLogout}
+  className="flex items-center gap-3 px-3 py-2 w-full rounded-lg hover:bg-slate-800"
+>
           <LogOut size={18} />
           Logout
         </button>

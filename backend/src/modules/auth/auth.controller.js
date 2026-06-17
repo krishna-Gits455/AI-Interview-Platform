@@ -16,6 +16,7 @@ const register = async (req, res) => {
     });
   } catch (error) {
     if (error.name === "ZodError") {
+      console.log(error);
       return res.status(400).json({
         success: false,
         message: "Validation failed",

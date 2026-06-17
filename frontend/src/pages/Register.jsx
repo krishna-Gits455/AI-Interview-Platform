@@ -1,3 +1,6 @@
+import { useNavigate } from "react-router-dom";
+import { registerUser } from "../services/auth.service";
+
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -15,47 +18,70 @@ export default function Register() {
   const [loading, setLoading] =
     useState(false);
 
+  const [formData, setFormData] =
+  useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+const navigate = useNavigate();  
+
   const [errors, setErrors] =
     useState({});
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleChange = (e) => {
+  setFormData({
+    ...formData,
+    [e.target.name]: e.target.value,
+  });
+};  
 
-    const form =
-      new FormData(e.target);
+  const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    const password =
-      form.get("password");
+  const newErrors = {};
 
-    const confirmPassword =
-      form.get("confirmPassword");
+  if (!formData.password) {
+    newErrors.password =
+      "Password required";
+  }
 
-    const newErrors = {};
+  if (
+    formData.password !==
+    formData.confirmPassword
+  ) {
+    newErrors.confirmPassword =
+      "Passwords must match";
+  }
 
-    if (!password)
-      newErrors.password =
-        "Password required";
+  setErrors(newErrors);
 
-    if (
-      password !== confirmPassword
-    ) {
-      newErrors.confirmPassword =
-        "Passwords must match";
-    }
+  if (
+    Object.keys(newErrors).length
+  )
+    return;
 
-    setErrors(newErrors);
-
-    if (
-      Object.keys(newErrors).length
-    )
-      return;
-
+  try {
     setLoading(true);
 
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
-  };
+    await registerUser({
+      name: formData.name,
+      email: formData.email,
+      password: formData.password,
+    });
+
+    navigate("/login");
+  } catch (error) {
+    alert(
+      error.response?.data?.message ||
+        "Registration failed"
+    );
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <PublicLayout>
@@ -75,38 +101,46 @@ export default function Register() {
             <Input
               label="Full Name"
               name="name"
+              value={formData.name}
+              onChange={handleChange}
             />
 
             <Input
               label="Email"
               name="email"
+              value={formData.email}
+              onChange={handleChange}
             />
 
             <Input
               label="Password"
               name="password"
+              value={formData.password}
+              onChange={handleChange}
               type={
                 showPassword
                   ? "text"
                   : "password"
               }
-              error={
-                errors.password
-              }
+              error={errors.password}
             />
 
             <Input
-              label="Confirm Password"
-              name="confirmPassword"
-              type={
-                showPassword
-                  ? "text"
-                  : "password"
-              }
-              error={
-                errors.confirmPassword
-              }
-            />
+                label="Confirm Password"
+                name="confirmPassword"
+                value={
+                  formData.confirmPassword
+                }
+                onChange={handleChange}
+                type={
+                  showPassword
+                    ? "text"
+                    : "password"
+                }
+                error={
+                  errors.confirmPassword
+                }
+              />
 
             <button
               type="button"

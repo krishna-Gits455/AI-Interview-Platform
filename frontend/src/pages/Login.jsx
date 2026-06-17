@@ -1,5 +1,10 @@
+
+import useAuthStore from "../store/authStore";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import {
+  Link,
+  useNavigate,
+} from "react-router-dom";
 
 import PublicLayout from "../layouts/PublicLayout";
 
@@ -15,15 +20,49 @@ export default function Login() {
   const [loading, setLoading] =
     useState(false);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const [formData, setFormData] =
+  useState({
+    email: "",
+    password: "",
+  });
 
+const navigate = useNavigate();
+
+const login =
+  useAuthStore(
+    (state) => state.login
+  );  
+
+  const handleChange = (e) => {
+  setFormData({
+    ...formData,
+    [e.target.name]:
+      e.target.value,
+  });
+};
+
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  try {
     setLoading(true);
 
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
-  };
+    await login({
+      email: formData.email,
+      password: formData.password,
+    });
+
+    navigate("/dashboard");
+  } catch (error) {
+    alert(
+      error.response?.data
+        ?.message ||
+        "Login failed"
+    );
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <PublicLayout>
@@ -41,20 +80,26 @@ export default function Login() {
           >
 
             <Input
-              label="Email"
-              placeholder="Enter email"
-            />
+  label="Email"
+  name="email"
+  value={formData.email}
+  onChange={handleChange}
+  placeholder="Enter email"
+/>
 
             <div>
               <Input
-                label="Password"
-                type={
-                  showPassword
-                    ? "text"
-                    : "password"
-                }
-                placeholder="Enter password"
-              />
+  label="Password"
+  name="password"
+  value={formData.password}
+  onChange={handleChange}
+  type={
+    showPassword
+      ? "text"
+      : "password"
+  }
+  placeholder="Enter password"
+/>
 
               <button
                 type="button"
