@@ -1,4 +1,9 @@
-import { useState } from "react";
+import {
+  useEffect,
+  useState,
+} from "react";
+
+import useInterviewStore from "../store/interviewStore";
 
 import AppLayout from "../layouts/AppLayout";
 
@@ -12,31 +17,15 @@ export default function Dashboard() {
   const [showModal, setShowModal] =
     useState(false);
 
-  const [interviews, setInterviews] =
-    useState([
-      {
-        id: 1,
-        title: "Frontend Interview",
-        date: "Tomorrow",
-        time: "6 PM",
-        language: "JavaScript",
-      },
-      {
-        id: 2,
-        title: "Backend Interview",
-        date: "Friday",
-        time: "4 PM",
-        language: "Node.js",
-      },
-    ]);
+  const {
+  interviews,
+  fetchInterviews,
+  isLoading,
+} = useInterviewStore();
 
-  const handleCreateInterview =
-    (interview) => {
-      setInterviews((prev) => [
-        interview,
-        ...prev,
-      ]);
-    };
+useEffect(() => {
+  fetchInterviews();
+}, []);
 
   return (
     <AppLayout>
@@ -52,20 +41,18 @@ export default function Dashboard() {
         />
 
         <UpcomingInterviews
-          interviews={interviews}
-        />
+  interviews={interviews}
+  isLoading={isLoading}
+/>
 
         <RecentReports />
 
         <CreateInterviewModal
-          open={showModal}
-          onClose={() =>
-            setShowModal(false)
-          }
-          onCreate={
-            handleCreateInterview
-          }
-        />
+  open={showModal}
+  onClose={() =>
+    setShowModal(false)
+  }
+/>
 
       </div>
 

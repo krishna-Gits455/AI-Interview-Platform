@@ -1,3 +1,5 @@
+
+import useInterviewStore from "../../../store/interviewStore";
 import { useState } from "react";
 import Button from "../../../components/ui/Button";
 import Input from "../../../components/ui/Input";
@@ -7,14 +9,23 @@ export default function CreateInterviewModal({
   onClose,
   onCreate,
 }) {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] =
+  useState({
     title: "",
-    candidate: "",
+    candidateEmail: "",
     date: "",
     time: "",
     language: "JavaScript",
     difficulty: "Easy",
   });
+
+  const [loading, setLoading] =
+  useState(false);
+
+const createInterview =
+  useInterviewStore(
+    (state) => state.createInterview
+  );
 
   if (!open) return null;
 
@@ -25,16 +36,38 @@ export default function CreateInterviewModal({
     });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    onCreate({
-      id: Date.now(),
-      ...formData,
+  try {
+    setLoading(true);
+
+    const scheduledAt =
+      new Date(
+        `${formData.date}T${formData.time}`
+      );
+
+    await createInterview({
+      title: formData.title,
+      candidateEmail:
+        formData.candidateEmail,
+      language: formData.language,
+      difficulty:
+        formData.difficulty,
+      scheduledAt,
     });
 
     onClose();
-  };
+  } catch (error) {
+    alert(
+      error.response?.data
+        ?.message ||
+        "Failed to create interview"
+    );
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
@@ -56,10 +89,10 @@ export default function CreateInterviewModal({
           />
 
           <Input
-            label="Candidate Email"
-            name="candidate"
-            onChange={handleChange}
-          />
+  label="Candidate Email"
+  name="candidateEmail"
+  onChange={handleChange}
+/>
 
           <Input
             type="date"
@@ -118,8 +151,10 @@ export default function CreateInterviewModal({
             </Button>
 
             <Button>
-              Create Interview
-            </Button>
+  {loading
+    ? "Creating..."
+    : "Create Interview"}
+</Button>
           </div>
         </form>
 
