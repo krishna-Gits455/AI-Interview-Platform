@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useParams } from "react-router-dom";
 
 import AppLayout from "../layouts/AppLayout";
 
@@ -15,6 +16,8 @@ export default function Room() {
     setIsWhiteboardOpen,
   ] = useState(false);
 
+  const { roomId } = useParams();
+
   return (
     <AppLayout>
 
@@ -25,6 +28,10 @@ export default function Room() {
             setIsWhiteboardOpen(true)
           }
         />
+
+        <div className="text-sm text-slate-400">
+          Room ID: {roomId}
+        </div>
 
         <ParticipantsBar />
 
