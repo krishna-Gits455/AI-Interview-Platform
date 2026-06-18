@@ -8,6 +8,8 @@ const {
 
 const {
   getMyInterviews,
+  getPendingInvitations,
+  acceptInterview,
 } = require("./interview.service");
 
 const createInterviewController = async (
@@ -54,7 +56,51 @@ const getMyInterviewsController = async (
   }
 };
 
+const getPendingInvitationsController = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    const invitations =
+      await getPendingInvitations(
+        req.user.email
+      );
+
+    res.status(200).json({
+      success: true,
+      invitations,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const acceptInterviewController = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    const interview = await acceptInterview(
+      req.params.id,
+      req.user
+    );
+
+    res.status(200).json({
+      success: true,
+      message:
+        "Invitation accepted successfully",
+      interview,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   createInterviewController,
   getMyInterviewsController,
+  getPendingInvitationsController,
+  acceptInterviewController,
 };

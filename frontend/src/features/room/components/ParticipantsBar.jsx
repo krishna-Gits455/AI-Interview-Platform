@@ -1,5 +1,6 @@
 export default function ParticipantsBar({
   interviewer,
+  candidate,
 }) {
   const participants = [
     {
@@ -7,6 +8,15 @@ export default function ParticipantsBar({
       name: interviewer.name,
       role: "Interviewer",
     },
+    ...(candidate
+      ? [
+          {
+            id: candidate.id,
+            name: candidate.name,
+            role: "Candidate",
+          },
+        ]
+      : []),
   ];
 
   return (

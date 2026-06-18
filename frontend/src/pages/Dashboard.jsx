@@ -12,6 +12,7 @@ import QuickActions from "../features/dashboard/components/QuickActions";
 import UpcomingInterviews from "../features/dashboard/components/UpcomingInterviews";
 import RecentReports from "../features/dashboard/components/RecentReports";
 import CreateInterviewModal from "../features/dashboard/components/CreateInterviewModal";
+import PendingInvitations from "../features/dashboard/components/PendingInvitations";
 
 export default function Dashboard() {
   const [showModal, setShowModal] =
@@ -19,13 +20,18 @@ export default function Dashboard() {
 
   const {
   interviews,
+  invitations,
   fetchInterviews,
+  fetchInvitations,
+  acceptInvitation,
   isLoading,
+  invitationsLoading,
 } = useInterviewStore();
 
 useEffect(() => {
   fetchInterviews();
-}, []);
+  fetchInvitations();
+}, [fetchInterviews, fetchInvitations]);
 
   return (
     <AppLayout>
@@ -38,6 +44,12 @@ useEffect(() => {
           onCreateInterview={() =>
             setShowModal(true)
           }
+        />
+
+        <PendingInvitations
+          invitations={invitations}
+          isLoading={invitationsLoading}
+          onAccept={acceptInvitation}
         />
 
         <UpcomingInterviews

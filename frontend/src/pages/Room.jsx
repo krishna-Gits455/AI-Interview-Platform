@@ -93,6 +93,7 @@ export default function Room() {
 
         <ParticipantsBar
           interviewer={room.interviewer}
+          candidate={room.candidate}
         />
 
         <div className="flex gap-4">

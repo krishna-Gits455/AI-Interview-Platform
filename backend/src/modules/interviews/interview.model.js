@@ -14,6 +14,12 @@ const interviewSchema = new mongoose.Schema(
       required: true,
     },
 
+    candidate: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: null,
+    },
+
     candidateEmail: {
     type: String,
     required: true,
@@ -45,11 +51,12 @@ const interviewSchema = new mongoose.Schema(
     status: {
       type: String,
       enum: [
+        "Pending",
         "Scheduled",
         "Completed",
         "Cancelled",
       ],
-      default: "Scheduled",
+      default: "Pending",
     },
 
     scheduledAt: {

@@ -4,12 +4,19 @@ import {
   createInterview,
   getInterviews,
 } from "../services/interview.service";
+import {
+  acceptInvitation,
+  getInvitations,
+} from "../services/invitation.service";
 
 const useInterviewStore = create(
   (set) => ({
     interviews: [],
+    invitations: [],
     isLoading: false,
+    invitationsLoading: false,
     error: null,
+    invitationError: null,
 
     fetchInterviews: async () => {
       try {
@@ -39,24 +46,69 @@ const useInterviewStore = create(
       }
     },
 
+    fetchInvitations: async () => {
+      try {
+        set({
+          invitationsLoading: true,
+          invitationError: null,
+        });
+
+        const data =
+          await getInvitations();
+
+        set({
+          invitations:
+            data.invitations || [],
+        });
+      } catch (error) {
+        set({
+          invitationError:
+            error.response?.data
+              ?.message ||
+            "Failed to fetch invitations",
+        });
+      } finally {
+        set({
+          invitationsLoading: false,
+        });
+      }
+    },
+
+    acceptInvitation: async (
+      interviewId
+    ) => {
+      await acceptInvitation(interviewId);
+
+      const [
+        invitationsData,
+        interviewsData,
+      ] = await Promise.all([
+        getInvitations(),
+        getInterviews(),
+      ]);
+
+      set({
+        invitations:
+          invitationsData.invitations || [],
+        interviews:
+          interviewsData.interviews || [],
+      });
+    },
+
     createInterview: async (
       interviewData
     ) => {
-      try {
-        await createInterview(
-          interviewData
-        );
+      await createInterview(
+        interviewData
+      );
 
-        const data =
-          await getInterviews();
+      const data =
+        await getInterviews();
 
-        set({
-          interviews:
-            data.interviews || [],
-        });
-      } catch (error) {
-        throw error;
-      }
+      set({
+        interviews:
+          data.interviews || [],
+      });
     },
   })
 );

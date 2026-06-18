@@ -15,16 +15,23 @@ const getRoomDetails = async (roomId, userId) => {
 
   const interview = await Interview.findById(
     roomId
-  ).populate("interviewer", "name");
+  )
+    .populate("interviewer", "name")
+    .populate("candidate", "name");
 
   if (!interview) {
     throw createHttpError("Room Not Found", 404);
   }
 
-  if (
-    interview.interviewer._id.toString() !==
-    userId.toString()
-  ) {
+  const isInterviewer =
+    interview.interviewer._id.toString() ===
+    userId.toString();
+
+  const isCandidate =
+    interview.candidate?._id.toString() ===
+    userId.toString();
+
+  if (!isInterviewer && !isCandidate) {
     throw createHttpError(
       "You don't have access to this room.",
       403
@@ -40,6 +47,12 @@ const getRoomDetails = async (roomId, userId) => {
       id: interview.interviewer._id,
       name: interview.interviewer.name,
     },
+    candidate: interview.candidate
+      ? {
+          id: interview.candidate._id,
+          name: interview.candidate.name,
+        }
+      : null,
   };
 };
 

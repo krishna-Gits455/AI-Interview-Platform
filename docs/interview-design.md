@@ -7,6 +7,7 @@ Interview
 - _id
 - title
 - interviewer
+- candidate
 - candidateEmail
 - language
 - difficulty
@@ -30,6 +31,7 @@ Interview
 
 ## Status
 
+- Pending
 - Scheduled
 - Completed
 - Cancelled
@@ -41,6 +43,10 @@ Stores User._id reference
 
 candidateEmail:
 Stores candidate email
+
+candidate:
+Stores the accepted candidate User._id reference.
+Remains null until the invitation is accepted.
 
 scheduledAt:
 Single Date object
