@@ -9,16 +9,17 @@ const useRoomStore = create((set) => ({
   isLoading: false,
   error: null,
   errorStatus: null,
+  participants: [],
 
   fetchRoom: async (roomId) => {
     try {
-      set({
-        room: null,
-        isLoading: true,
-        error: null,
-        errorStatus: null,
-      });
-
+     set({
+  room: null,
+  participants: [],
+  isLoading: true,
+  error: null,
+  errorStatus: null,
+});
       const room =
         await getRoomDetails(roomId);
 
@@ -37,12 +38,19 @@ const useRoomStore = create((set) => ({
   },
 
   clearRoom: () => {
-    set({
-      room: null,
-      error: null,
-      errorStatus: null,
-    });
-  },
+  set({
+    room: null,
+    error: null,
+    errorStatus: null,
+    participants: [],
+  });
+},
+
+  setParticipants: (
+  participants
+) => {
+  set({ participants });
+},
 }));
 
 export default useRoomStore;

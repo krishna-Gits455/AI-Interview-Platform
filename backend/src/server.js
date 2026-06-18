@@ -38,11 +38,23 @@ app.use("/api/rooms", roomRoutes);
 // Error middleware hamesha last me
 app.use(errorMiddleware);
 
+const http = require("http");
+
+const initializeSocket =
+  require("./socket");
+
 const startServer = async () => {
   await connectDB();
 
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+  const server =
+    http.createServer(app);
+
+  initializeSocket(server);
+
+  server.listen(PORT, () => {
+    console.log(
+      `Server running on port ${PORT}`
+    );
   });
 };
 

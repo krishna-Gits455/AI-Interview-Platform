@@ -38,22 +38,31 @@ const getRoomDetails = async (roomId, userId) => {
     );
   }
 
+  const role =
+  interview.interviewer._id.toString() ===
+  userId.toString()
+    ? "interviewer"
+    : "candidate";
+
   return {
-    roomId: interview._id,
-    title: interview.title,
-    language: interview.language,
-    difficulty: interview.difficulty,
-    interviewer: {
-      id: interview.interviewer._id,
-      name: interview.interviewer.name,
-    },
-    candidate: interview.candidate
-      ? {
-          id: interview.candidate._id,
-          name: interview.candidate.name,
-        }
-      : null,
-  };
+  roomId: interview._id,
+  title: interview.title,
+  language: interview.language,
+  difficulty: interview.difficulty,
+  role,
+
+  interviewer: {
+    id: interview.interviewer._id,
+    name: interview.interviewer.name,
+  },
+
+  candidate: interview.candidate
+    ? {
+        id: interview.candidate._id,
+        name: interview.candidate.name,
+      }
+    : null,
+};
 };
 
 module.exports = {
