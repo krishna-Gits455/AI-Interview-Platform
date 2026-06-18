@@ -1,8 +1,6 @@
-import {
-  messages,
-} from "../data/mockRoomData";
-
 export default function ChatPanel() {
+  const messages = [];
+
   return (
     <div className="w-80 bg-slate-900 border border-slate-800 rounded-lg flex flex-col">
 

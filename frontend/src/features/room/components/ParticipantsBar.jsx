@@ -1,8 +1,14 @@
-import {
-  participants,
-} from "../data/mockRoomData";
+export default function ParticipantsBar({
+  interviewer,
+}) {
+  const participants = [
+    {
+      id: interviewer.id,
+      name: interviewer.name,
+      role: "Interviewer",
+    },
+  ];
 
-export default function ParticipantsBar() {
   return (
     <div className="border-b border-slate-800 p-4 flex gap-4">
 

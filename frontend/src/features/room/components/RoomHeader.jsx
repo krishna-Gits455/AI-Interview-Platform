@@ -1,6 +1,7 @@
 import Button from "../../../components/ui/Button";
 
 export default function RoomHeader({
+  room,
   onOpenWhiteboard,
 }) {
   return (
@@ -8,16 +9,16 @@ export default function RoomHeader({
 
       <div>
         <h2 className="text-xl font-bold">
-          Frontend Interview
+          {room.title}
         </h2>
 
         <div className="flex gap-2 mt-2">
           <span className="px-2 py-1 bg-slate-800 rounded">
-            JavaScript
+            {room.language}
           </span>
 
           <span className="px-2 py-1 bg-slate-800 rounded">
-            Medium
+            {room.difficulty}
           </span>
         </div>
       </div>

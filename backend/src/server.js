@@ -8,6 +8,7 @@ const connectDB = require("./config/db");
 const authRoutes = require("./modules/auth/auth.routes");
 const errorMiddleware = require("./middleware/error.middleware");
 const interviewRoutes = require("./modules/interviews/interview.routes");
+const roomRoutes = require("./modules/rooms/room.routes");
 
 const app = express(); 
 
@@ -31,6 +32,8 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 
 app.use("/api/interviews", interviewRoutes);
+
+app.use("/api/rooms", roomRoutes);
 
 // Error middleware hamesha last me
 app.use(errorMiddleware);
