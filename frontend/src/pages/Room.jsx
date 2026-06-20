@@ -11,7 +11,7 @@ import useChatStore from "../store/chatStore";
 
 import RoomHeader from "../features/room/components/RoomHeader";
 import ParticipantsBar from "../features/room/components/ParticipantsBar";
-import EditorPanel from "../features/room/components/EditorPanel";
+import EditorPanel from "../features/editor/components/EditorPanel";
 import ChatPanel from "../features/room/components/ChatPanel";
 import OutputPanel from "../features/room/components/OutputPanel";
 import WhiteboardDrawer from "../features/room/components/WhiteboardDrawer";
