@@ -1,3 +1,7 @@
+const Chat = require(
+  "../modules/chat/chat.model"
+);
+
 const EVENTS = require("./socketEvents");
 
 const roomParticipants =
@@ -71,6 +75,42 @@ const registerRoomHandlers = (
       }
     );
   });
+
+  socket.on(
+  EVENTS.CHAT_SEND,
+  async ({
+    roomId,
+    senderId,
+    message,
+  }) => {
+    try {
+      if (!message?.trim())
+        return;
+
+      const chat =
+        await Chat.create({
+          roomId,
+          sender: senderId,
+          message,
+        });
+
+      const populated =
+        await Chat.findById(
+          chat._id
+        ).populate(
+          "sender",
+          "name"
+        );
+
+      io.to(roomId).emit(
+        EVENTS.CHAT_MESSAGE,
+        populated
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  }
+);
 };
 
 module.exports = {

@@ -5,4 +5,9 @@ export const EVENTS = {
 
   PARTICIPANTS_UPDATE:
     "participants:update",
+
+  CHAT_SEND: "chat:send",
+
+  CHAT_MESSAGE:
+    "chat:message",
 };

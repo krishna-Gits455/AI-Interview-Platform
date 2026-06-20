@@ -1,13 +1,13 @@
-import {
-  useEffect,
-  useState,
-} from "react";
-
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 import AppLayout from "../layouts/AppLayout";
 import Loader from "../components/shared/Loader";
 import EmptyState from "../components/shared/EmptyState";
+
 import useRoomStore from "../store/roomStore";
+import useAuthStore from "../store/authStore";
+import useChatStore from "../store/chatStore";
 
 import RoomHeader from "../features/room/components/RoomHeader";
 import ParticipantsBar from "../features/room/components/ParticipantsBar";
@@ -16,77 +16,97 @@ import ChatPanel from "../features/room/components/ChatPanel";
 import OutputPanel from "../features/room/components/OutputPanel";
 import WhiteboardDrawer from "../features/room/components/WhiteboardDrawer";
 
-import useAuthStore from "../store/authStore";
 import {
   joinRoom,
   socket,
 } from "../features/room/socket/roomSocket";
 
+import {
+  listenForMessages,
+  removeMessageListener,
+} from "../features/room/socket/chatSocket";
+
 import { EVENTS } from "../features/room/socket/socketEvents";
 
-import { useParams } from "react-router-dom";
-
 export default function Room() {
-  const [
-    isWhiteboardOpen,
-    setIsWhiteboardOpen,
-  ] = useState(false);
+  const [isWhiteboardOpen, setIsWhiteboardOpen] =
+    useState(false);
 
   const { roomId } = useParams();
 
-const {
-  room,
-  isLoading,
-  error,
-  errorStatus,
-  fetchRoom,
-  clearRoom,
-  participants,
-  setParticipants,
-} = useRoomStore();
+  const {
+    room,
+    isLoading,
+    error,
+    errorStatus,
+    fetchRoom,
+    clearRoom,
+    participants,
+    setParticipants,
+  } = useRoomStore();
 
-  const { user } =
-  useAuthStore();
+  const {
+    fetchMessages,
+    clearMessages,
+    addMessage,
+  } = useChatStore();
 
+  const { user } = useAuthStore();
+
+  // Load room + chat history
   useEffect(() => {
     fetchRoom(roomId);
+    fetchMessages(roomId);
 
-    return clearRoom;
-  }, [roomId, fetchRoom, clearRoom]);
+    return () => {
+      clearRoom();
+      clearMessages();
+    };
+  }, [roomId]);
 
+  // Realtime chat listener
   useEffect(() => {
-  if (!room || !user) return;
+    const handler = (message) => {
+      addMessage(message);
+    };
 
-  joinRoom({
-    roomId,
-    userId: user._id,
-    userName: user.name,
-  });
+    listenForMessages(handler);
 
-  const handler = (
-    participants
-  ) => {
-    setParticipants(
-      participants
-    );
-  };
+    return () => {
+      removeMessageListener(handler);
+    };
+  }, []);
 
-  socket.on(
-    EVENTS.PARTICIPANTS_UPDATE,
-    handler
-  );
+  // Join room + participants updates
+  useEffect(() => {
+    if (!room || !user) return;
 
-  return () => {
-    socket.off(
+    joinRoom({
+      roomId,
+      userId: user._id,
+      userName: user.name,
+    });
+
+    const handler = (participants) => {
+      setParticipants(participants);
+    };
+
+    socket.on(
       EVENTS.PARTICIPANTS_UPDATE,
       handler
     );
-  };
-}, [
-  room,
-  user,
-  roomId,
-]);
+
+    return () => {
+      socket.off(
+        EVENTS.PARTICIPANTS_UPDATE,
+        handler
+      );
+    };
+  }, [
+    room,
+    user,
+    roomId,
+  ]);
 
   if (isLoading) {
     return (
@@ -126,7 +146,6 @@ const {
 
   return (
     <AppLayout>
-
       <div className="space-y-4">
 
         <RoomHeader
@@ -141,15 +160,13 @@ const {
         </div>
 
         <ParticipantsBar
-  participants={participants}
-/>
+          participants={participants}
+        />
 
         <div className="flex gap-4">
-
           <EditorPanel />
 
-          <ChatPanel />
-
+          <ChatPanel roomId={roomId} />
         </div>
 
         <OutputPanel />
@@ -162,7 +179,6 @@ const {
         />
 
       </div>
-
     </AppLayout>
   );
 }
