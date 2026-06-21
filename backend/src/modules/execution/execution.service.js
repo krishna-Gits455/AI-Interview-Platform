@@ -13,6 +13,12 @@ const {
   executeJavaScript,
 } = require("./executors/javascript.executor");
 
+const {
+  executePython,
+} = require(
+  "./executors/python.executor"
+);
+
 const runCode = async (
   language,
   code
@@ -38,26 +44,36 @@ const runCode = async (
 
   try {
     switch (language) {
-      case "javascript":
-        return await executeJavaScript(
-          {
-            code,
-            sourcePath,
-            workspacePath,
-            config,
-          }
-        );
+  case "javascript":
+    return await executeJavaScript({
+      code,
+      sourcePath,
+      workspacePath,
+      config,
+    });
 
-      default:
-        throw new Error(
-          "Language executor not implemented"
-        );
-    }
-  } finally {
-    deleteWorkspace(
-      workspacePath
+  case "python":
+    return await executePython({
+      code,
+      sourcePath,
+      workspacePath,
+      config,
+    });
+
+  default:
+    throw new Error(
+      "Language executor not implemented"
     );
-  }
+}
+  } finally {
+  
+
+  deleteWorkspace(
+    workspacePath
+  );
+
+ 
+}
 };
 
 module.exports = {

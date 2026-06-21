@@ -5,13 +5,12 @@ const {
 );
 
 (async () => {
-  const result =
-    await runCode(
-      "javascript",
-      `
-      while(true){}
-      `
-    );
+ const result =
+  await runCode(
+    "python",
+    `for i in range(5):
+    print(i)`
+  );
 
-  console.log(result);
+console.log(result);
 })();
