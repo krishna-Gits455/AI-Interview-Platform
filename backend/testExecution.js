@@ -7,9 +7,12 @@ const {
 (async () => {
  const result =
   await runCode(
-    "python",
-    `for i in range(5):
-    print(i)`
+    "cpp",
+    `#include <iostream>
+
+int main() {
+    std::cout << "Hello";
+}`
   );
 
 console.log(result);

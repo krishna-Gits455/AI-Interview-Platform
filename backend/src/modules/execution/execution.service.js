@@ -19,6 +19,18 @@ const {
   "./executors/python.executor"
 );
 
+const {
+  executeJava,
+} = require(
+  "./executors/java.executor"
+);
+
+const {
+  executeCpp,
+} = require(
+  "./executors/cpp.executor"
+);
+
 const runCode = async (
   language,
   code
@@ -59,6 +71,22 @@ const runCode = async (
       workspacePath,
       config,
     });
+
+    case "java":
+  return await executeJava({
+    code,
+    sourcePath,
+    workspacePath,
+    config,
+  });
+
+  case "cpp":
+  return await executeCpp({
+    code,
+    sourcePath,
+    workspacePath,
+    config,
+  });
 
   default:
     throw new Error(

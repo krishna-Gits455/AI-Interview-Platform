@@ -84,27 +84,32 @@ const runContainer = ({
         }, timeout);
 
       process.on(
-        "close",
-        () => {
-          if (finished) return;
+  "close",
+  (exitCode) => {
+    if (finished) return;
 
-          finished = true;
+    finished = true;
 
-          clearTimeout(
-            timer
-          );
+    clearTimeout(
+      timer
+    );
 
-          resolve({
-            success:
-              stderr.length === 0,
-            stdout,
-            stderr,
-            executionTime:
-              Date.now() -
-              startTime,
-          });
-        }
-      );
+    resolve({
+      success:
+        exitCode === 0,
+
+      stdout,
+
+      stderr,
+
+      exitCode,
+
+      executionTime:
+        Date.now() -
+        startTime,
+    });
+  }
+);
 
       process.on(
         "error",
