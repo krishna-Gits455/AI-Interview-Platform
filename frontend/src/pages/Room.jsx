@@ -16,7 +16,15 @@ import ChatPanel from "../features/room/components/ChatPanel";
 import OutputPanel from "../features/room/components/OutputPanel";
 import WhiteboardDrawer from "../features/room/components/WhiteboardDrawer";
 import useEditorStore from "../store/editorStore";
+import {getEditorState,} from "../services/roomState.service";
 
+import useExecutionStore
+  from "../features/execution/store/executionStore";
+
+import {
+  listenForExecutionSync,
+  removeExecutionSyncListener,
+} from "../features/execution/socket/executionSocket";
 import {
   listenForCodeSync,
   removeCodeSyncListener,
@@ -64,18 +72,47 @@ export default function Room() {
     addMessage,
   } = useChatStore();
 
+  const {
+  setExecutionResult,
+} =
+  useExecutionStore();
+
   const { user } = useAuthStore();
 
   // Load room + chat history
   useEffect(() => {
-    fetchRoom(roomId);
-    fetchMessages(roomId);
+  const initializeRoom =
+    async () => {
+      await fetchRoom(roomId);
 
-    return () => {
-      clearRoom();
-      clearMessages();
+      fetchMessages(roomId);
+
+      try {
+        const state =
+          await getEditorState(
+            roomId
+          );
+
+        setCode(
+          state.code || ""
+        );
+
+        setLanguage(
+          state.language ||
+            "javascript"
+        );
+      } catch (error) {
+        console.error(error);
+      }
     };
-  }, [roomId]);
+
+  initializeRoom();
+
+  return () => {
+    clearRoom();
+    clearMessages();
+  };
+}, [roomId]);
 
   // Realtime chat listener
   useEffect(() => {
@@ -121,7 +158,26 @@ export default function Room() {
     roomId,
   ]);
 
-  
+  useEffect(() => {
+  const handler =
+    (result) => {
+      setExecutionResult(
+        result
+      );
+    };
+
+  listenForExecutionSync(
+    handler
+  );
+
+  return () => {
+    removeExecutionSyncListener(
+      handler
+    );
+  };
+}, []);
+
+
 
   useEffect(() => {
   const codeHandler =

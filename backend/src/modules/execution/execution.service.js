@@ -1,4 +1,6 @@
-
+const Interview = require(
+  "../interviews/interview.model"
+);
 
 const registry = require(
   "./config/languageRegistry"
@@ -31,7 +33,41 @@ const {
   "./executors/cpp.executor"
 );
 
+const saveExecutionResult =
+  async (
+    roomId,
+    userId,
+    result
+  ) => {
+    await Interview.findByIdAndUpdate(
+      roomId,
+      {
+        lastExecution: {
+          stdout:
+            result.stdout,
+
+          stderr:
+            result.stderr,
+
+          success:
+            result.success,
+
+          executionTime:
+            result.executionTime,
+
+          executedBy:
+            userId,
+
+          executedAt:
+            new Date(),
+        },
+      }
+    );
+  };
+
 const runCode = async (
+  roomId,
+  userId,
   language,
   code
 ) => {
@@ -55,44 +91,62 @@ const runCode = async (
   );
 
   try {
-    switch (language) {
+    let result;
+
+switch (language) {
   case "javascript":
-    return await executeJavaScript({
-      code,
-      sourcePath,
-      workspacePath,
-      config,
-    });
+    result =
+      await executeJavaScript({
+        code,
+        sourcePath,
+        workspacePath,
+        config,
+      });
+    break;
 
   case "python":
-    return await executePython({
-      code,
-      sourcePath,
-      workspacePath,
-      config,
-    });
+    result =
+      await executePython({
+        code,
+        sourcePath,
+        workspacePath,
+        config,
+      });
+    break;
 
-    case "java":
-  return await executeJava({
-    code,
-    sourcePath,
-    workspacePath,
-    config,
-  });
+  case "java":
+    result =
+      await executeJava({
+        code,
+        sourcePath,
+        workspacePath,
+        config,
+      });
+    break;
 
   case "cpp":
-  return await executeCpp({
-    code,
-    sourcePath,
-    workspacePath,
-    config,
-  });
+    result =
+      await executeCpp({
+        code,
+        sourcePath,
+        workspacePath,
+        config,
+      });
+    break;
 
   default:
     throw new Error(
       "Language executor not implemented"
     );
 }
+
+await saveExecutionResult(
+  roomId,
+  userId,
+  result
+);
+
+return result;
   } finally {
   
 

@@ -4,31 +4,50 @@ import {
   runCodeRequest,
 } from "../services/execution.service";
 
-const useExecutionStore =
-  create((set) => ({
+import {
+  emitExecutionSync,
+} from "../socket/executionSocket";
+
+const useExecutionStore = create(
+  (set) => ({
     output: "",
     stderr: "",
     success: null,
-
-    executionTime: 0,
-
+    executionTime: null,
     isRunning: false,
 
+    setExecutionResult:
+      (result) =>
+        set({
+          output:
+            result.stdout || "",
+
+          stderr:
+            result.stderr || "",
+
+          success:
+            result.success,
+
+          executionTime:
+            result.executionTime,
+        }),
+
     runCode: async ({
+      roomId,
       language,
       code,
     }) => {
       try {
         set({
+          isRunning: true,
           output: "",
           stderr: "",
           success: null,
-          executionTime: 0,
-          isRunning: true,
         });
 
         const result =
           await runCodeRequest({
+            roomId,
             language,
             code,
           });
@@ -48,12 +67,15 @@ const useExecutionStore =
 
           isRunning: false,
         });
+
+        emitExecutionSync({
+          roomId,
+          result,
+        });
       } catch (error) {
         set({
-          output: "",
-
           stderr:
-            error.response?.data
+            error?.response?.data
               ?.message ||
             "Execution failed",
 
@@ -63,6 +85,7 @@ const useExecutionStore =
         });
       }
     },
-  }));
+  })
+);
 
 export default useExecutionStore;

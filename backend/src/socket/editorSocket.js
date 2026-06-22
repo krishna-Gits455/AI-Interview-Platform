@@ -1,3 +1,6 @@
+const executionResults =
+  new Map();
+
 const EVENTS = require("./socketEvents");
 
 const roomEditorState =
@@ -50,6 +53,8 @@ const registerEditorHandlers = (
         }
       );
 
+
+
       socket.to(roomId).emit(
         EVENTS.LANGUAGE_SYNC,
         {
@@ -60,17 +65,45 @@ const registerEditorHandlers = (
   );
 
   socket.on(
+  EVENTS.EXECUTION_SYNC,
+  ({
+    roomId,
+    result,
+  }) => {
+    executionResults.set(
+      roomId,
+      result
+    );
+
+    socket.to(roomId).emit(
+      EVENTS.EXECUTION_SYNC,
+      result
+    );
+  }
+);
+
+  socket.on(
     EVENTS.ROOM_JOIN,
     ({ roomId }) => {
       const state =
         roomEditorState.get(roomId);
 
-      if (!state) return;
+      if (state) {
+  socket.emit(
+    EVENTS.CODE_SYNC,
+    state
+  );
+}
 
-      socket.emit(
-        EVENTS.CODE_SYNC,
-        state
-      );
+      const execution =
+  executionResults.get(roomId);
+
+if (execution) {
+  socket.emit(
+    EVENTS.EXECUTION_SYNC,
+    execution
+  );
+}
     }
   );
 };

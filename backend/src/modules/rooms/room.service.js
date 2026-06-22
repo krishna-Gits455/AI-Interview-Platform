@@ -2,25 +2,48 @@ const mongoose = require("mongoose");
 
 const Interview = require("../interviews/interview.model");
 
-const createHttpError = (message, statusCode) => {
+const createHttpError = (
+  message,
+  statusCode
+) => {
   const error = new Error(message);
   error.statusCode = statusCode;
   return error;
 };
 
-const getRoomDetails = async (roomId, userId) => {
-  if (!mongoose.isValidObjectId(roomId)) {
-    throw createHttpError("Room Not Found", 404);
+const getRoomDetails = async (
+  roomId,
+  userId
+) => {
+  if (
+    !mongoose.isValidObjectId(
+      roomId
+    )
+  ) {
+    throw createHttpError(
+      "Room Not Found",
+      404
+    );
   }
 
-  const interview = await Interview.findById(
-    roomId
-  )
-    .populate("interviewer", "name")
-    .populate("candidate", "name");
+  const interview =
+    await Interview.findById(
+      roomId
+    )
+      .populate(
+        "interviewer",
+        "name"
+      )
+      .populate(
+        "candidate",
+        "name"
+      );
 
   if (!interview) {
-    throw createHttpError("Room Not Found", 404);
+    throw createHttpError(
+      "Room Not Found",
+      404
+    );
   }
 
   const isInterviewer =
@@ -31,7 +54,10 @@ const getRoomDetails = async (roomId, userId) => {
     interview.candidate?._id.toString() ===
     userId.toString();
 
-  if (!isInterviewer && !isCandidate) {
+  if (
+    !isInterviewer &&
+    !isCandidate
+  ) {
     throw createHttpError(
       "You don't have access to this room.",
       403
@@ -39,32 +65,100 @@ const getRoomDetails = async (roomId, userId) => {
   }
 
   const role =
-  interview.interviewer._id.toString() ===
-  userId.toString()
-    ? "interviewer"
-    : "candidate";
+    isInterviewer
+      ? "interviewer"
+      : "candidate";
 
   return {
-  roomId: interview._id,
-  title: interview.title,
-  language: interview.language,
-  difficulty: interview.difficulty,
-  role,
+    roomId: interview._id,
 
-  interviewer: {
-    id: interview.interviewer._id,
-    name: interview.interviewer.name,
-  },
+    title:
+      interview.title,
 
-  candidate: interview.candidate
-    ? {
-        id: interview.candidate._id,
-        name: interview.candidate.name,
+    language:
+      interview.language,
+
+    difficulty:
+      interview.difficulty,
+
+    role,
+
+    interviewer: {
+      id: interview.interviewer._id,
+      name:
+        interview.interviewer
+          .name,
+    },
+
+    candidate:
+      interview.candidate
+        ? {
+            id: interview
+              .candidate._id,
+            name:
+              interview
+                .candidate
+                .name,
+          }
+        : null,
+  };
+};
+
+const getEditorState =
+  async (roomId) => {
+    const interview =
+      await Interview.findById(
+        roomId
+      );
+
+    if (!interview) {
+      throw createHttpError(
+        "Room Not Found",
+        404
+      );
+    }
+
+    return (
+      interview.editorState || {
+        code: "",
+        language:
+          "javascript",
       }
-    : null,
-};
-};
+    );
+  };
+
+const saveEditorState =
+  async (
+    roomId,
+    code,
+    language
+  ) => {
+    const interview =
+      await Interview.findByIdAndUpdate(
+        roomId,
+        {
+          editorState: {
+            code,
+            language,
+          },
+        },
+        {
+          new: true,
+        }
+      );
+
+    if (!interview) {
+      throw createHttpError(
+        "Room Not Found",
+        404
+      );
+    }
+
+    return interview.editorState;
+  };
 
 module.exports = {
   getRoomDetails,
+  getEditorState,
+  saveEditorState,
 };

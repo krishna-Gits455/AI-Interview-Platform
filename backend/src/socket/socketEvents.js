@@ -22,4 +22,7 @@ module.exports = {
 
   LANGUAGE_SYNC:
     "language:sync",
+
+  EXECUTION_SYNC:
+  "execution:sync",  
 };

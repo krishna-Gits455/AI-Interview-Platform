@@ -21,10 +21,10 @@ const interviewSchema = new mongoose.Schema(
     },
 
     candidateEmail: {
-    type: String,
-    required: true,
-    lowercase: true,
-    trim: true,
+      type: String,
+      required: true,
+      lowercase: true,
+      trim: true,
     },
 
     language: {
@@ -62,6 +62,35 @@ const interviewSchema = new mongoose.Schema(
     scheduledAt: {
       type: Date,
       required: true,
+    },
+
+    editorState: {
+      code: {
+        type: String,
+        default: "",
+      },
+
+      language: {
+        type: String,
+        default: "javascript",
+      },
+    },
+
+    lastExecution: {
+      stdout: String,
+
+      stderr: String,
+
+      success: Boolean,
+
+      executionTime: Number,
+
+      executedBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+
+      executedAt: Date,
     },
   },
   {

@@ -1,5 +1,3 @@
-
-
 const {
   runCodeSchema,
 } = require("./execution.validation");
@@ -14,8 +12,6 @@ const runCodeController =
     res,
     next
   ) => {
-
-  
     try {
       const {
         language,
@@ -27,6 +23,8 @@ const runCodeController =
 
       const result =
         await runCode(
+          req.body.roomId,
+          req.user._id,
           language,
           code
         );
