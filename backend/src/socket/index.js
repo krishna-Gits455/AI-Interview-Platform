@@ -5,6 +5,10 @@ const {
   registerRoomHandlers,
 } = require("./roomSocket");
 
+const {
+  registerEditorHandlers,
+} = require("./editorSocket");
+
 const initializeSocket = (
   server
 ) => {
@@ -23,6 +27,11 @@ const initializeSocket = (
     );
 
     registerRoomHandlers(
+      io,
+      socket
+    );
+
+    registerEditorHandlers(
       io,
       socket
     );

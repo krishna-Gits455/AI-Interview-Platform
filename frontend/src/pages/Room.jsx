@@ -15,7 +15,14 @@ import EditorPanel from "../features/editor/components/EditorPanel";
 import ChatPanel from "../features/room/components/ChatPanel";
 import OutputPanel from "../features/room/components/OutputPanel";
 import WhiteboardDrawer from "../features/room/components/WhiteboardDrawer";
+import useEditorStore from "../store/editorStore";
 
+import {
+  listenForCodeSync,
+  removeCodeSyncListener,
+  listenForLanguageSync,
+  removeLanguageSyncListener,
+} from "../features/editor/socket/editorSocket";
 import {
   joinRoom,
   socket,
@@ -44,6 +51,12 @@ export default function Room() {
     participants,
     setParticipants,
   } = useRoomStore();
+
+  const {
+  setCode,
+  setLanguage,
+  setRemoteUpdate,
+} = useEditorStore();
 
   const {
     fetchMessages,
@@ -107,6 +120,44 @@ export default function Room() {
     user,
     roomId,
   ]);
+
+  
+
+  useEffect(() => {
+  const codeHandler =
+    ({ code }) => {
+      setRemoteUpdate(true);
+
+      setCode(code);
+
+      setTimeout(() => {
+        setRemoteUpdate(false);
+      }, 0);
+    };
+
+  const languageHandler =
+    ({ language }) => {
+      setLanguage(language);
+    };
+
+  listenForCodeSync(
+    codeHandler
+  );
+
+  listenForLanguageSync(
+    languageHandler
+  );
+
+  return () => {
+    removeCodeSyncListener(
+      codeHandler
+    );
+
+    removeLanguageSyncListener(
+      languageHandler
+    );
+  };
+}, []);
 
   if (isLoading) {
     return (
@@ -173,7 +224,7 @@ export default function Room() {
 
   </div>
 
-  <ChatPanel />
+  <ChatPanel roomId={roomId} />
 
 </div>
 

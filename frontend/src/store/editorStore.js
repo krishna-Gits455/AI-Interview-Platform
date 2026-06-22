@@ -8,17 +8,22 @@ const useEditorStore = create((set) => ({
 
   theme: "vs-dark",
 
+  isRemoteUpdate: false,
+
+setRemoteUpdate: (
+  isRemoteUpdate
+) =>
+  set({
+    isRemoteUpdate,
+  }),
+
   setCode: (code) =>
     set({ code }),
 
   setLanguage: (language) =>
-    set({
-      language,
-      code:
-        editorTemplates[
-          language
-        ],
-    }),
+  set({
+    language,
+  }),
 
   setTheme: (theme) =>
     set({ theme }),

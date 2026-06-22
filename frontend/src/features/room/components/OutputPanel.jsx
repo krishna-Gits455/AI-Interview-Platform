@@ -26,7 +26,7 @@ export default function OutputPanel() {
   }, [output, stderr]);
 
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-lg p-4 min-h-[180px]">
+    <div className="bg-slate-900 border border-slate-800 rounded-lg p-4 h-48 overflow-y-auto">
 
       <div className="flex justify-between mb-3">
 

@@ -1,3 +1,8 @@
+import { useParams } from "react-router-dom";
+
+import {
+  emitLanguageChange,
+} from "../socket/editorSocket";
 import CodeEditor from "./CodeEditor";
 
 import useEditorStore from "../../../store/editorStore";
@@ -5,6 +10,9 @@ import useEditorStore from "../../../store/editorStore";
 import useExecutionStore from "../../execution/store/executionStore";
 
 export default function EditorPanel() {
+  const { roomId } =
+  useParams();
+
   const {
     language,
     setLanguage,
@@ -28,6 +36,16 @@ export default function EditorPanel() {
       });
     };
 
+    const handleLanguageChange =
+  (language) => {
+    setLanguage(language);
+
+    emitLanguageChange({
+      roomId,
+      language,
+    });
+  };
+
   return (
     <div className="flex-1 bg-slate-900 border border-slate-800 rounded-lg overflow-hidden">
 
@@ -35,11 +53,12 @@ export default function EditorPanel() {
 
         <select
           value={language}
+          
           onChange={(e) =>
-            setLanguage(
-              e.target.value
-            )
-          }
+  handleLanguageChange(
+    e.target.value
+  )
+}
           className="bg-slate-800 border border-slate-700 rounded px-3 py-2"
         >
           <option value="javascript">

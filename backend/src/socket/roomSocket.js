@@ -76,6 +76,8 @@ const registerRoomHandlers = (
     );
   });
 
+  
+
   socket.on(
   EVENTS.CHAT_SEND,
   async ({
