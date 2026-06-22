@@ -24,7 +24,7 @@ export default function RoomHeader({
       </div>
 
       <div className="flex gap-3">
-        <Button>Run Code</Button>
+        
 
         <Button
           variant="secondary"

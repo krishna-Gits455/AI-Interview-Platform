@@ -164,12 +164,18 @@ export default function Room() {
         />
 
         <div className="flex gap-4">
-          <EditorPanel />
 
-          <ChatPanel roomId={roomId} />
-        </div>
+  <div className="flex-1 space-y-4">
 
-        <OutputPanel />
+    <EditorPanel />
+
+    <OutputPanel />
+
+  </div>
+
+  <ChatPanel />
+
+</div>
 
         <WhiteboardDrawer
           open={isWhiteboardOpen}

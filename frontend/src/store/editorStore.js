@@ -1,9 +1,8 @@
 import { create } from "zustand";
+import { editorTemplates } from "../features/editor/utils/editorTemplates";
 
 const useEditorStore = create((set) => ({
-  code: `function solve() {
-
-}`,
+  code: editorTemplates.javascript,
 
   language: "javascript",
 
@@ -13,7 +12,13 @@ const useEditorStore = create((set) => ({
     set({ code }),
 
   setLanguage: (language) =>
-    set({ language }),
+    set({
+      language,
+      code:
+        editorTemplates[
+          language
+        ],
+    }),
 
   setTheme: (theme) =>
     set({ theme }),

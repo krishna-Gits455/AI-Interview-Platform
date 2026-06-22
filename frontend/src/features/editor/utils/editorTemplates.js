@@ -1,4 +1,4 @@
-export const templates = {
+export const editorTemplates = {
   javascript: `function solve() {
 
 }`,
@@ -7,12 +7,14 @@ export const templates = {
     pass`,
 
   java: `public class Main {
+    public static void main(String[] args) {
 
+    }
 }`,
 
   cpp: `#include <iostream>
 
 int main() {
 
-}`,
+}`
 };
