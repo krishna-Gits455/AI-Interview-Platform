@@ -43,6 +43,9 @@ import {
 
 import { EVENTS } from "../features/room/socket/socketEvents";
 
+import EndInterviewModal
+from "../features/interviews/components/EndInterviewModal";
+
 export default function Room() {
   const [isWhiteboardOpen, setIsWhiteboardOpen] =
     useState(false);
@@ -77,7 +80,16 @@ export default function Room() {
 } =
   useExecutionStore();
 
+  const [
+  showEndInterviewModal,
+  setShowEndInterviewModal,
+] = useState(false);
+
   const { user } = useAuthStore();
+
+  const isInterviewer =
+  room?.interviewer?.id ===
+  user?._id;
 
   // Load room + chat history
   useEffect(() => {
@@ -252,15 +264,36 @@ export default function Room() {
   }
 
   return (
+    
+
     <AppLayout>
       <div className="space-y-4">
 
-        <RoomHeader
-          room={room}
-          onOpenWhiteboard={() =>
-            setIsWhiteboardOpen(true)
-          }
-        />
+        <div className="flex items-center justify-between">
+
+  <RoomHeader
+    room={room}
+    onOpenWhiteboard={() =>
+      setIsWhiteboardOpen(true)
+    }
+  />
+
+  {isInterviewer &&
+    room.status !==
+      "Completed" && (
+      <button
+        onClick={() =>
+          setShowEndInterviewModal(
+            true
+          )
+        }
+        className="bg-red-600 hover:bg-red-500 px-4 py-2 rounded-lg"
+      >
+        End Interview
+      </button>
+    )}
+
+</div>
 
         <div className="text-sm text-slate-400">
           Room ID: {roomId}
@@ -310,6 +343,22 @@ export default function Room() {
         />
 
       </div>
+
+
+      <EndInterviewModal
+  open={
+    showEndInterviewModal
+  }
+  onClose={() =>
+    setShowEndInterviewModal(
+      false
+    )
+  }
+  interviewId={roomId}
+  onSuccess={() => {
+    fetchRoom(roomId);
+  }}
+/>
     </AppLayout>
   );
 }
