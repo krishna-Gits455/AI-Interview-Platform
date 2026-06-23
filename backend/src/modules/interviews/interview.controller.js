@@ -13,6 +13,7 @@ const {
   getPendingInvitations,
   acceptInterview,
   endInterview,
+  getInterviewResult,
 } = require("./interview.service");
 
 const createInterviewController = async (
@@ -133,10 +134,33 @@ const endInterviewController =
     }
   };
 
+  const getInterviewResultController =
+  async (
+    req,
+    res,
+    next
+  ) => {
+    try {
+      const interview =
+        await getInterviewResult(
+          req.params.id,
+          req.user._id
+        );
+
+      res.status(200).json({
+        success: true,
+        interview,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
 module.exports = {
   createInterviewController,
   getMyInterviewsController,
   getPendingInvitationsController,
   acceptInterviewController,
   endInterviewController,
+  getInterviewResultController,
 };

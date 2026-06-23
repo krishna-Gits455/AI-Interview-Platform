@@ -8,6 +8,7 @@ const {
   getPendingInvitationsController,
   acceptInterviewController,
   endInterviewController,
+  getInterviewResultController,
 } = require(
   "./interview.controller"
 );
@@ -36,6 +37,12 @@ router.post(
   "/:id/end",
   authMiddleware,
   endInterviewController
+);
+
+router.get(
+  "/:id/result",
+  authMiddleware,
+  getInterviewResultController
 );
 
 router.get(

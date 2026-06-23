@@ -164,10 +164,63 @@ const endInterview =
     return interview;
   };
 
+  const getInterviewResult =
+  async (
+    interviewId,
+    userId
+  ) => {
+    if (
+      !mongoose.isValidObjectId(
+        interviewId
+      )
+    ) {
+      throw createHttpError(
+        "Interview not found",
+        404
+      );
+    }
+
+    const interview =
+      await Interview.findById(
+        interviewId
+      )
+        .populate(
+          "interviewer",
+          "name email"
+        )
+        .populate(
+          "candidate",
+          "name email"
+        );
+
+    if (!interview) {
+      throw createHttpError(
+        "Interview not found",
+        404
+      );
+    }
+
+    const hasAccess =
+      interview.interviewer._id.toString() ===
+        userId.toString() ||
+      interview.candidate?._id.toString() ===
+        userId.toString();
+
+    if (!hasAccess) {
+      throw createHttpError(
+        "Forbidden",
+        403
+      );
+    }
+
+    return interview;
+  };
+
 module.exports = {
   createInterview,
   getMyInterviews,
   getPendingInvitations,
   acceptInterview,
   endInterview,
+  getInterviewResult,
 };
