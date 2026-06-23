@@ -1,15 +1,18 @@
 const {
   createInterviewSchema,
-} = require("./interview.validation");
+  endInterviewSchema,
+} = require(
+  "./interview.validation"
+);
+
+
 
 const {
   createInterview,
-} = require("./interview.service");
-
-const {
   getMyInterviews,
   getPendingInvitations,
   acceptInterview,
+  endInterview,
 } = require("./interview.service");
 
 const createInterviewController = async (
@@ -98,9 +101,42 @@ const acceptInterviewController = async (
   }
 };
 
+const endInterviewController =
+  async (
+    req,
+    res,
+    next
+  ) => {
+    try {
+      const data =
+        endInterviewSchema.parse(
+          req.body
+        );
+
+      const interview =
+        await endInterview({
+          interviewId:
+            req.params.id,
+
+          interviewerId:
+            req.user._id,
+
+          ...data,
+        });
+
+      res.status(200).json({
+        success: true,
+        interview,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
 module.exports = {
   createInterviewController,
   getMyInterviewsController,
   getPendingInvitationsController,
   acceptInterviewController,
+  endInterviewController,
 };

@@ -49,15 +49,33 @@ const interviewSchema = new mongoose.Schema(
     },
 
     status: {
-      type: String,
-      enum: [
-        "Pending",
-        "Scheduled",
-        "Completed",
-        "Cancelled",
-      ],
-      default: "Pending",
-    },
+  type: String,
+  enum: [
+    "Pending",
+    "Scheduled",
+    "In Progress",
+    "Completed",
+    "Cancelled",
+  ],
+  default: "Pending",
+},
+
+result: {
+  rating: Number,
+
+  recommendation: {
+    type: String,
+    enum: [
+      "Hire",
+      "Maybe",
+      "Reject",
+    ],
+  },
+
+  feedback: String,
+
+  completedAt: Date,
+},
 
     scheduledAt: {
       type: Date,

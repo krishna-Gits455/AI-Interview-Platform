@@ -9,7 +9,9 @@ import useEditorStore from "../../../store/editorStore";
 
 import useExecutionStore from "../../execution/store/executionStore";
 
-export default function EditorPanel() {
+export default function EditorPanel({
+  interviewStatus,
+}) {
   const { roomId } =
   useParams();
 
@@ -39,6 +41,8 @@ export default function EditorPanel() {
 
     const handleLanguageChange =
   (language) => {
+    if (isCompleted) return;
+
     setLanguage(language);
 
     emitLanguageChange({
@@ -47,18 +51,25 @@ export default function EditorPanel() {
     });
   };
 
+  const isCompleted =
+  interviewStatus ===
+  "Completed";
+
   return (
     <div className="flex-1 bg-slate-900 border border-slate-800 rounded-lg overflow-hidden">
 
       <div className="border-b border-slate-800 p-3 flex items-center justify-between">
 
         <select
+  disabled={
+    isCompleted
+  }
           value={language}
           
           onChange={(e) =>
-  handleLanguageChange(
-    e.target.value
-  )
+            handleLanguageChange(
+            e.target.value
+            )
 }
           className="bg-slate-800 border border-slate-700 rounded px-3 py-2"
         >
@@ -84,8 +95,9 @@ export default function EditorPanel() {
             handleRunCode
           }
           disabled={
-            isRunning
-          }
+  isRunning ||
+  isCompleted
+}
           className="bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 px-4 py-2 rounded-lg"
         >
           {isRunning
@@ -96,7 +108,11 @@ export default function EditorPanel() {
       </div>
 
       <div className="h-[500px]">
-        <CodeEditor />
+        <CodeEditor
+  readOnly={
+    isCompleted
+  }
+/>
       </div>
 
     </div>

@@ -7,7 +7,10 @@ const {
   getMyInterviewsController,
   getPendingInvitationsController,
   acceptInterviewController,
-} = require("./interview.controller");
+  endInterviewController,
+} = require(
+  "./interview.controller"
+);
 
 const router = express.Router();
 
@@ -29,10 +32,18 @@ router.post(
   acceptInterviewController
 );
 
+router.post(
+  "/:id/end",
+  authMiddleware,
+  endInterviewController
+);
+
 router.get(
   "/",
   authMiddleware,
   getMyInterviewsController
 );
+
+
 
 module.exports = router;

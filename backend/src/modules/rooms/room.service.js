@@ -64,44 +64,47 @@ const getRoomDetails = async (
     );
   }
 
+  if (
+  isInterviewer &&
+  interview.status ===
+    "Scheduled"
+) {
+  interview.status =
+    "In Progress";
+
+  await interview.save();
+}
+
   const role =
     isInterviewer
       ? "interviewer"
       : "candidate";
 
   return {
-    roomId: interview._id,
+  roomId: interview._id,
 
-    title:
-      interview.title,
+  title: interview.title,
 
-    language:
-      interview.language,
+  status: interview.status,
 
-    difficulty:
-      interview.difficulty,
+  language: interview.language,
 
-    role,
+  difficulty: interview.difficulty,
 
-    interviewer: {
-      id: interview.interviewer._id,
-      name:
-        interview.interviewer
-          .name,
-    },
+  role,
 
-    candidate:
-      interview.candidate
-        ? {
-            id: interview
-              .candidate._id,
-            name:
-              interview
-                .candidate
-                .name,
-          }
-        : null,
-  };
+  interviewer: {
+    id: interview.interviewer._id,
+    name: interview.interviewer.name,
+  },
+
+  candidate: interview.candidate
+    ? {
+        id: interview.candidate._id,
+        name: interview.candidate.name,
+      }
+    : null,
+};
 };
 
 const getEditorState =

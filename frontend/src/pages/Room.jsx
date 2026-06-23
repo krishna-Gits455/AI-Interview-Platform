@@ -266,6 +266,15 @@ export default function Room() {
           Room ID: {roomId}
         </div>
 
+        {room.status ===
+  "Completed" && (
+  <div className="bg-green-900/30 border border-green-700 rounded-lg p-3 text-green-300">
+    Interview Completed
+  </div>
+)}
+
+
+
         <ParticipantsBar
           participants={participants}
         />
@@ -274,13 +283,22 @@ export default function Room() {
 
   <div className="flex-1 space-y-4">
 
-    <EditorPanel />
+    <EditorPanel
+  interviewStatus={
+    room.status
+  }
+/>
 
     <OutputPanel />
 
   </div>
 
-  <ChatPanel roomId={roomId} />
+  <ChatPanel
+  roomId={roomId}
+  interviewStatus={
+    room.status
+  }
+/>
 
 </div>
 

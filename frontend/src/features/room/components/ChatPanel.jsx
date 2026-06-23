@@ -12,6 +12,7 @@ import {
 
 export default function ChatPanel({
   roomId,
+  interviewStatus,
 }) {
   const [message, setMessage] =
     useState("");
@@ -22,7 +23,12 @@ export default function ChatPanel({
   const { messages } =
     useChatStore();
 
+  const isCompleted =
+    interviewStatus ===
+    "Completed";  
+
   const handleSend = () => {
+    if (isCompleted) return;
     if (!message.trim()) return;
 
     sendMessage({
@@ -33,6 +39,8 @@ export default function ChatPanel({
 
     setMessage("");
   };
+
+  
 
   return (
     <div className="w-96 border border-slate-800 rounded-xl flex flex-col">
@@ -51,20 +59,18 @@ export default function ChatPanel({
           return (
             <div
               key={msg._id}
-              className={`flex ${
-                mine
+              className={`flex ${mine
                   ? "justify-end"
                   : "justify-start"
-              }`}
+                }`}
             >
               <div className="max-w-[80%]">
 
                 <div
-                  className={`rounded-lg px-3 py-2 ${
-                    mine
+                  className={`rounded-lg px-3 py-2 ${mine
                       ? "bg-indigo-600"
                       : "bg-slate-800"
-                  }`}
+                    }`}
                 >
                   <p className="text-sm font-medium">
                     {
@@ -102,6 +108,9 @@ export default function ChatPanel({
       <div className="p-4 border-t border-slate-800 flex gap-2">
 
         <input
+          disabled={
+            isCompleted
+          }
           value={message}
           onChange={(e) =>
             setMessage(
@@ -114,6 +123,9 @@ export default function ChatPanel({
 
         <Button
           onClick={handleSend}
+          disabled={
+            isCompleted
+          }
         >
           Send
         </Button>

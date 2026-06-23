@@ -26,7 +26,9 @@ const debouncedSaveEditorState =
     1000
   );
 
-export default function CodeEditor() {
+export default function CodeEditor({
+  readOnly,
+}) {
   const { roomId } = useParams();
 
   const {
@@ -38,6 +40,7 @@ export default function CodeEditor() {
   } = useEditorStore();
 
   const handleChange = (value) => {
+  if (readOnly) return;  
   const nextCode = value || "";
 
   setCode(nextCode);
@@ -61,11 +64,14 @@ export default function CodeEditor() {
 
   return (
     <Editor
-      height="100%"
-      language={language}
-      theme={theme}
-      value={code}
-      onChange={handleChange}
-    />
+  height="100%"
+  language={language}
+  theme={theme}
+  value={code}
+  onChange={handleChange}
+  options={{
+    readOnly,
+  }}
+/>
   );
 }

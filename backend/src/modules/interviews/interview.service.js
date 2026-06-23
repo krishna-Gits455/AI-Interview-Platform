@@ -97,9 +97,77 @@ const acceptInterview = async (
   return interview;
 };
 
+const endInterview =
+  async ({
+    interviewId,
+    interviewerId,
+    rating,
+    recommendation,
+    feedback,
+  }) => {
+    if (
+      !mongoose.isValidObjectId(
+        interviewId
+      )
+    ) {
+      throw createHttpError(
+        "Interview not found",
+        404
+      );
+    }
+
+    const interview =
+      await Interview.findById(
+        interviewId
+      );
+
+    if (!interview) {
+      throw createHttpError(
+        "Interview not found",
+        404
+      );
+    }
+
+    if (
+      interview.interviewer.toString() !==
+      interviewerId.toString()
+    ) {
+      throw createHttpError(
+        "Forbidden",
+        403
+      );
+    }
+
+    if (
+      interview.status !==
+      "In Progress"
+    ) {
+      throw createHttpError(
+        "Interview is not in progress",
+        400
+      );
+    }
+
+    interview.status =
+      "Completed";
+
+    interview.result = {
+      rating,
+      recommendation,
+      feedback,
+      completedAt:
+        new Date(),
+    };
+
+    await interview.save();
+
+    return interview;
+  };
+
 module.exports = {
   createInterview,
   getMyInterviews,
   getPendingInvitations,
   acceptInterview,
+  endInterview,
 };
