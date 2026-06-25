@@ -7,14 +7,27 @@ import useInterviewStore from "../store/interviewStore";
 
 import AppLayout from "../layouts/AppLayout";
 
-import DashboardHeader from "../features/dashboard/components/DashboardHeader";
-import QuickActions from "../features/dashboard/components/QuickActions";
-import UpcomingInterviews from "../features/dashboard/components/UpcomingInterviews";
-import RecentReports from "../features/dashboard/components/RecentReports";
+import DashboardHero from "../features/dashboard/components/DashboardHero";
+import DashboardStats from "../features/dashboard/components/DashboardStats";
+import DashboardActionCenter from "../features/dashboard/components/DashboardActionCenter";
+import CreatedByYouTable from "../features/dashboard/components/CreatedByYouTable";
+import AssignedToYouTable from "../features/dashboard/components/AssignedToYouTable";
+import RecentReportsGrid from "../features/dashboard/components/RecentReportsGrid";
+
 import CreateInterviewModal from "../features/dashboard/components/CreateInterviewModal";
-import PendingInvitations from "../features/dashboard/components/PendingInvitations";
+
+import useAuthStore from "../store/authStore";
 
 export default function Dashboard() {
+
+
+
+const { user } = useAuthStore();
+
+
+
+
+
   const [showModal, setShowModal] =
     useState(false);
 
@@ -29,45 +42,184 @@ export default function Dashboard() {
 } = useInterviewStore();
 
 useEffect(() => {
+  if (interviews.length) {
+    console.log(
+      "FIRST INTERVIEW",
+      interviews[0]
+    );
+  }
+}, [interviews]);
+
+useEffect(() => {
+  console.log(
+    "USER",
+    user
+  );
+}, [user]);
+
+useEffect(() => {
+  console.log(user);
+  console.log(interviews);
+}, [user, interviews]);
+
+const stats = {
+  scheduled: interviews.filter(
+    (i) => i.status === "Scheduled"
+  ).length,
+
+  inProgress: interviews.filter(
+    (i) => i.status === "In Progress"
+  ).length,
+
+  completed: interviews.filter(
+    (i) => i.status === "Completed"
+  ).length,
+
+  pendingFeedback: interviews.filter(
+    (i) =>
+      i.status === "Completed" &&
+      !i.result
+  ).length,
+};
+
+const actionItems = invitations.map(
+  (invitation) => ({
+    id: invitation._id,
+
+    title: invitation.title,
+
+    description: `Invitation from ${invitation.interviewer?.name}`,
+
+    type: "invitation",
+
+    actionLabel: "Accept",
+
+    onAction: () =>
+      acceptInvitation(
+        invitation._id
+      ),
+  })
+);
+
+const createdByYou =
+  interviews
+    .filter(
+      (i) =>
+        i.interviewer ===
+        user._id
+    )
+    .map((i) => ({
+      id: i._id,
+      title: i.title,
+      candidate:
+        i.candidateEmail,
+      dateTime:
+        new Date(
+          i.scheduledAt
+        ).toLocaleString(),
+      status: i.status,
+    }));
+
+const assignedToYou =
+  interviews
+    .filter(
+      (i) =>
+        i.candidate ===
+        user._id
+    )
+    .map((i) => ({
+      id: i._id,
+      title: i.title,
+      interviewer:
+        i.interviewer,
+      dateTime:
+        new Date(
+          i.scheduledAt
+        ).toLocaleString(),
+      status: i.status,
+    }));
+
+    const recentReports =
+  interviews
+    .filter(
+      (i) =>
+        i.status ===
+          "Completed" &&
+        i.result
+    )
+    .slice(0, 4)
+    .map((i) => ({
+      id: i._id,
+
+      title: i.title,
+
+      score:
+        i.result.rating,
+
+      verdict:
+        i.result
+          .recommendation,
+
+      completedAt:
+        i.result
+          .completedAt,
+    }));
+
+useEffect(() => {
   fetchInterviews();
   fetchInvitations();
 }, [fetchInterviews, fetchInvitations]);
 
   return (
     <AppLayout>
+  <div className="w-full max-w-none space-y-8">
 
-      <div className="space-y-6 max-w-6xl">
+    
 
-        <DashboardHeader />
+    <div className="flex-1 space-y-8">
 
-        <QuickActions
-          onCreateInterview={() =>
-            setShowModal(true)
-          }
-        />
+      <DashboardHero
+        onCreateInterview={() =>
+          setShowModal(true)
+        }
+      />
 
-        <PendingInvitations
-          invitations={invitations}
-          isLoading={invitationsLoading}
-          onAccept={acceptInvitation}
-        />
+      <DashboardStats
+        stats={stats}
+      />
 
-        <UpcomingInterviews
-  interviews={interviews}
-  isLoading={isLoading}
-/>
+      <DashboardActionCenter
+        actions={actionItems}
+      />
 
-        <RecentReports />
+      <CreatedByYouTable
+        interviews={
+          createdByYou
+        }
+      />
 
-        <CreateInterviewModal
-  open={showModal}
-  onClose={() =>
-    setShowModal(false)
-  }
-/>
+      <AssignedToYouTable
+        interviews={
+          assignedToYou
+        }
+      />
 
-      </div>
+      <RecentReportsGrid
+        reports={
+          recentReports
+        }
+      />
 
-    </AppLayout>
+    </div>
+
+  </div>
+
+  <CreateInterviewModal
+    open={showModal}
+    onClose={() =>
+      setShowModal(false)
+    }
+  />
+</AppLayout>
   );
 }

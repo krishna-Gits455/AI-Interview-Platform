@@ -9,7 +9,7 @@ export default function AppLayout({ children }) {
       <div className="flex-1 flex flex-col">
         <Topbar />
         
-        <main className="p-6">
+        <main className="p-8 max-w-[1600px] w-full">
           {children}
         </main>
       </div>
