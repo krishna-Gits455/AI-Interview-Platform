@@ -13,7 +13,7 @@ import DashboardActionCenter from "../features/dashboard/components/DashboardAct
 import CreatedByYouTable from "../features/dashboard/components/CreatedByYouTable";
 import AssignedToYouTable from "../features/dashboard/components/AssignedToYouTable";
 import RecentReportsGrid from "../features/dashboard/components/RecentReportsGrid";
-
+import DashboardSidebar from "../features/dashboard/components/DashboardSidebar";
 import CreateInterviewModal from "../features/dashboard/components/CreateInterviewModal";
 
 import useAuthStore from "../store/authStore";
@@ -170,56 +170,63 @@ useEffect(() => {
   fetchInvitations();
 }, [fetchInterviews, fetchInvitations]);
 
-  return (
-    <AppLayout>
-  <div className="w-full max-w-none space-y-8">
+ 
+   return (
+  <AppLayout>
+    <div className="flex gap-8 items-start">
 
-    
+      <DashboardSidebar />
 
-    <div className="flex-1 space-y-8">
+      <div className="flex-1 space-y-8">
 
-      <DashboardHero
-        onCreateInterview={() =>
-          setShowModal(true)
-        }
-      />
+        <section id="overview">
+          <DashboardHero
+            onCreateInterview={() =>
+              setShowModal(true)
+            }
+          />
+        </section>
 
-      <DashboardStats
+        <section id="stats">
+    <DashboardStats
         stats={stats}
-      />
+    />
+</section>
 
-      <DashboardActionCenter
-        actions={actionItems}
-      />
+        <section id="actions">
+          <DashboardActionCenter
+            actions={actionItems}
+          />
+        </section>
 
-      <CreatedByYouTable
-        interviews={
-          createdByYou
-        }
-      />
+        <section id="created">
+          <CreatedByYouTable
+            interviews={createdByYou}
+          />
+        </section>
 
-      <AssignedToYouTable
-        interviews={
-          assignedToYou
-        }
-      />
+        <section id="assigned">
+          <AssignedToYouTable
+            interviews={assignedToYou}
+          />
+        </section>
 
-      <RecentReportsGrid
-        reports={
-          recentReports
-        }
-      />
+        <section id="reports">
+          <RecentReportsGrid
+            reports={recentReports}
+          />
+        </section>
+
+      </div>
 
     </div>
 
-  </div>
-
-  <CreateInterviewModal
-    open={showModal}
-    onClose={() =>
-      setShowModal(false)
-    }
-  />
-</AppLayout>
-  );
+    <CreateInterviewModal
+      open={showModal}
+      onClose={() =>
+        setShowModal(false)
+      }
+    />
+  </AppLayout>
+);
 }

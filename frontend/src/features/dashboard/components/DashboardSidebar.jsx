@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Home,
   Zap,
@@ -7,7 +7,7 @@ import {
   FileText,
   ChevronLeft,
   ChevronRight,
-  Code2,
+  LayoutDashboard,
 } from "lucide-react";
 
 const navItems = [
@@ -18,54 +18,107 @@ const navItems = [
   { id: "recent-reports", label: "Recent Reports", icon: FileText },
 ];
 
-const DashboardSidebar = ({ activeSection = "overview", onSectionChange }) => {
-  const [collapsed, setCollapsed] = useState(false);
+export default function DashboardSidebar({
+  activeSection = "overview",
+  onSectionChange,
+}) {
+  const [collapsed, setCollapsed] = useState(() => {
+    return (
+      localStorage.getItem("dashboard-sidebar") ===
+      "collapsed"
+    );
+  });
+
+  useEffect(() => {
+    localStorage.setItem(
+      "dashboard-sidebar",
+      collapsed ? "collapsed" : "expanded"
+    );
+  }, [collapsed]);
+
+  const handleSectionClick = (id) => {
+    onSectionChange?.(id);
+
+    const section =
+      document.getElementById(id);
+
+    if (section) {
+      section.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  };
 
   return (
     <aside
-      className={`relative flex flex-col bg-[#0d1117] border-r border-gray-800 h-full transition-all duration-300 ${
-        collapsed ? "w-16" : "w-56"
+      className={`sticky top-24 self-start flex flex-col bg-[#0d1117] border border-slate-800 rounded-2xl transition-all duration-300 ${
+        collapsed ? "w-16" : "w-60"
       }`}
     >
-      {/* Logo */}
-      <div className="flex items-center gap-2.5 px-4 py-5 border-b border-gray-800 min-h-[64px]">
-        <div className="shrink-0 w-7 h-7 bg-purple-600 rounded-md flex items-center justify-center">
-          <Code2 size={14} className="text-white" />
+      {/* Header */}
+      <div className="flex items-center gap-2.5 px-4 py-5 border-b border-slate-800 min-h-[68px]">
+        <div className="shrink-0 w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center shadow-md">
+          <LayoutDashboard
+            size={16}
+            className="text-white"
+          />
         </div>
+
         {!collapsed && (
           <span className="text-sm font-semibold text-white whitespace-nowrap">
-            AI Interview Platform
+            Dashboard
           </span>
         )}
       </div>
 
-      {/* Nav */}
+      {/* Navigation */}
       <nav className="flex-1 py-4 px-2 space-y-1 overflow-hidden">
-        {navItems.map(({ id, label, icon: Icon }) => {
-          const active = activeSection === id;
-          return (
-            <button
-              key={id}
-              onClick={() => onSectionChange?.(id)}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                active
-                  ? "bg-purple-600/20 text-purple-400"
-                  : "text-gray-400 hover:bg-gray-800 hover:text-white"
-              }`}
-              title={collapsed ? label : undefined}
-            >
-              <Icon size={18} strokeWidth={1.8} className="shrink-0" />
-              {!collapsed && <span className="truncate">{label}</span>}
-            </button>
-          );
-        })}
+        {navItems.map(
+          ({ id, label, icon: Icon }) => {
+            const active =
+              activeSection === id;
+
+            return (
+              <button
+                key={id}
+                onClick={() =>
+                  handleSectionClick(id)
+                }
+                title={
+                  collapsed
+                    ? label
+                    : undefined
+                }
+                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+                  active
+                    ? "bg-indigo-600/20 text-indigo-400"
+                    : "text-slate-400 hover:bg-slate-800 hover:text-white"
+                }`}
+              >
+                <Icon
+                  size={18}
+                  strokeWidth={1.8}
+                  className="shrink-0"
+                />
+
+                {!collapsed && (
+                  <span className="truncate">
+                    {label}
+                  </span>
+                )}
+              </button>
+            );
+          }
+        )}
       </nav>
 
-      {/* Collapse toggle */}
+      {/* Collapse */}
       <button
-        onClick={() => setCollapsed((c) => !c)}
-        className="flex items-center gap-2 px-4 py-4 border-t border-gray-800 text-gray-400 hover:text-white text-xs transition-colors"
-        title={collapsed ? "Expand" : "Collapse"}
+        onClick={() =>
+          setCollapsed((c) => !c)
+        }
+        className="flex items-center gap-2 px-4 py-4 border-t border-slate-800 text-slate-400 hover:text-white text-sm transition-colors"
       >
         {collapsed ? (
           <ChevronRight size={16} />
@@ -78,6 +131,4 @@ const DashboardSidebar = ({ activeSection = "overview", onSectionChange }) => {
       </button>
     </aside>
   );
-};
-
-export default DashboardSidebar;
+}
