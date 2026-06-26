@@ -91,13 +91,13 @@ export default function AppNavbar() {
           }
           className="flex items-center gap-3 cursor-pointer select-none"
         >
-          <div className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center font-bold text-lg shadow-lg shadow-indigo-900/30">
+          <div className="w-13 h-13 rounded-xl bg-indigo-600 flex items-center justify-center font-bold text-xl shadow-lg shadow-indigo-900/30">
             I
           </div>
 
           <div>
 
-            <h1 className="font-bold text-lg tracking-tight">
+            <h1 className="font-bold text-3xl tracking-tight">
               InterviewOS
             </h1>
 
@@ -123,15 +123,15 @@ export default function AppNavbar() {
               <NavLink
                 key={label}
                 to={to}
-                className={`flex items-center gap-2 px-9 py-5 rounded-xl transition-all duration-200 ${
+                className={`flex items-center gap-2 px-6 py-4 rounded-xl transition-all duration-200 ${
                   active
                     ? "bg-indigo-600 text-white"
                     : "text-slate-400 hover:text-white hover:bg-slate-800"
                 }`}
               >
-                <Icon size={18} />
+                <Icon size={28} />
 
-                <span className="font-medium">
+                <span className="text-[22px] font-semibold">
                   {label}
                 </span>
               </NavLink>
@@ -147,7 +147,7 @@ export default function AppNavbar() {
           <button className="relative p-2 rounded-xl hover:bg-slate-800 transition">
 
             <Bell
-              size={20}
+              size={28}
               className="text-slate-300"
             />
 
@@ -164,7 +164,7 @@ export default function AppNavbar() {
               className="flex items-center gap-3 rounded-xl hover:bg-slate-800 px-2 py-2 transition"
             >
 
-              <div className="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center font-semibold">
+              <div className="w-13 h-13 rounded-full bg-indigo-600 flex items-center justify-center font-semibold">
 
                 {initials}
 
@@ -183,7 +183,7 @@ export default function AppNavbar() {
               </div>
 
               <ChevronDown
-                size={18}
+                size={28}
                 className={`transition-transform ${
                   open
                     ? "rotate-180"
@@ -204,7 +204,7 @@ export default function AppNavbar() {
                 >
 
                   <LogOut
-                    size={18}
+                    size={28}
                   />
 
                   Logout

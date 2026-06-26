@@ -17,15 +17,15 @@ import DashboardSidebar from "../features/dashboard/components/DashboardSidebar"
 import CreateInterviewModal from "../features/dashboard/components/CreateInterviewModal";
 
 import useAuthStore from "../store/authStore";
-
+import { useNavigate } from "react-router-dom";
 export default function Dashboard() {
-
-
+  const navigate = useNavigate();
 
 const { user } = useAuthStore();
 
 
-
+const [activeSection, setActiveSection] =
+  useState("overview");
 
 
   const [showModal, setShowModal] =
@@ -40,6 +40,10 @@ const { user } = useAuthStore();
   isLoading,
   invitationsLoading,
 } = useInterviewStore();
+
+console.log("USER", user);
+
+console.log("INTERVIEWS", interviews);
 
 useEffect(() => {
   if (interviews.length) {
@@ -82,24 +86,48 @@ const stats = {
   ).length,
 };
 
-const actionItems = invitations.map(
+const invitationActions = invitations.map(
   (invitation) => ({
-    id: invitation._id,
-
-    title: invitation.title,
-
-    description: `Invitation from ${invitation.interviewer?.name}`,
+    id: `invite-${invitation._id}`,
 
     type: "invitation",
 
-    actionLabel: "Accept",
+    title: invitation.title,
 
-    onAction: () =>
-      acceptInvitation(
-        invitation._id
-      ),
+    subtitle: `Invitation from ${invitation.interviewer?.name}`,
+
+    buttonLabel: "Accept",
+
+    onButtonClick: () =>
+      acceptInvitation(invitation._id),
   })
 );
+
+const joinActions = interviews
+  .filter(
+    (interview) =>
+      interview.candidate === user?._id &&
+      interview.status === "Scheduled"
+  )
+  .map((interview) => ({
+    id: `join-${interview._id}`,
+
+    type: "upcoming",
+
+    title: interview.title,
+
+    subtitle: `Interview ready to join`,
+
+    buttonLabel: "Join Room",
+
+    onButtonClick: () =>
+      navigate(`/room/${interview._id}`),
+  }));
+
+const actionItems = [
+  ...invitationActions,
+  ...joinActions,
+];
 
 const createdByYou =
   interviews
@@ -118,6 +146,8 @@ const createdByYou =
           i.scheduledAt
         ).toLocaleString(),
       status: i.status,
+      roomId: i._id,
+reportId: i._id,
     }));
 
 const assignedToYou =
@@ -175,7 +205,10 @@ useEffect(() => {
   <AppLayout>
     <div className="flex gap-8 items-start">
 
-      <DashboardSidebar />
+      <DashboardSidebar
+  activeSection={activeSection}
+  onSectionChange={setActiveSection}
+/>
 
       <div className="flex-1 space-y-8">
 

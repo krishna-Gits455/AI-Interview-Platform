@@ -1,13 +1,63 @@
-const StatCard = ({ icon: Icon, iconColor = "text-purple-400", value, label, sublabel }) => {
+const StatCard = ({
+  icon: Icon,
+  iconColor = "text-violet-400",
+  value,
+  label,
+  sublabel,
+}) => {
   return (
-    <div className="bg-[#111827] border border-gray-800 rounded-xl p-5 flex items-center gap-4 flex-1 min-w-0">
-      <div className={`shrink-0 ${iconColor}`}>
-        <Icon size={28} strokeWidth={1.5} />
+    <div
+      className="
+        h-[155px]
+        rounded-2xl
+        border
+        border-slate-800
+        bg-[#111827]
+        px-7
+        py-6
+        transition-all
+        duration-200
+        hover:border-violet-500/30
+      "
+    >
+      {/* Icon */}
+
+      <div
+        className={`
+          w-14
+          h-14
+          rounded-2xl
+          bg-slate-900
+          flex
+          items-center
+          justify-center
+          ${iconColor}
+        `}
+      >
+        <Icon
+          size={28}
+          strokeWidth={1.8}
+        />
       </div>
-      <div className="min-w-0">
-        <div className="text-3xl font-bold text-white leading-tight">{value}</div>
-        <div className="text-sm font-medium text-white mt-0.5">{label}</div>
-        {sublabel && <div className="text-xs text-gray-500 mt-0.5">{sublabel}</div>}
+
+      {/* Text */}
+
+      <div className="mt-6">
+
+        <h2 className="text-[44px] font-bold leading-none text-white">
+          {value}
+        </h2>
+
+        <p className="mt-3 text-lg font-semibold text-white">
+          {label}
+        </p>
+
+        {sublabel && (
+          <p className="mt-1 text-sm text-slate-400">
+            {sublabel}
+          </p>
+        )}
+
       </div>
     </div>
   );

@@ -269,8 +269,7 @@ export default function Room() {
     <AppLayout>
       <div className="space-y-4">
 
-        <div className="flex items-center justify-between">
-
+<div className="relative flex items-center justify-between px-12 py-10">
   <RoomHeader
     room={room}
     onOpenWhiteboard={() =>

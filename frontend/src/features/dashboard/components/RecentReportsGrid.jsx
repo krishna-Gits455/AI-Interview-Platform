@@ -1,88 +1,225 @@
-import { FileText, ExternalLink, ChevronRight } from "lucide-react";
+import { useRef } from "react";
+import {
+  FileText,
+  ArrowRight,
+  ChevronRight,
+} from "lucide-react";
+
 import DashboardSectionHeader from "./DashboardSectionHeader";
 
-const verdictStyles = {
-  Hire: "bg-green-900/40 text-green-400 border border-green-700/40",
-  Maybe: "bg-yellow-900/40 text-yellow-400 border border-yellow-700/40",
-  "Not Hire": "bg-red-900/40 text-red-400 border border-red-700/40",
+const verdictConfig = {
+  Hire: {
+    accent: "border-t-green-500",
+    badge: "bg-green-500/15 text-green-400",
+    score: "text-green-400",
+  },
+
+  Maybe: {
+    accent: "border-t-yellow-500",
+    badge: "bg-yellow-500/15 text-yellow-400",
+    score: "text-yellow-400",
+  },
+
+  Reject: {
+    accent: "border-t-red-500",
+    badge: "bg-red-500/15 text-red-400",
+    score: "text-red-400",
+  },
 };
 
-const verdictBorderAccent = {
-  Hire: "border-t-green-500",
-  Maybe: "border-t-yellow-500",
-  "Not Hire": "border-t-red-500",
-};
-
-const ReportCard = ({ report, onOpen }) => {
-  const borderAccent = verdictBorderAccent[report.verdict] ?? "border-t-gray-600";
-  const score = parseFloat(report.score);
-  const scoreColor =
-    score >= 8 ? "text-green-400" : score >= 6 ? "text-yellow-400" : "text-red-400";
+function ReportCard({
+  report,
+  onOpen,
+}) {
+  const style =
+    verdictConfig[
+      report.verdict
+    ] || verdictConfig.Maybe;
 
   return (
     <div
-      className={`bg-[#111827] border border-gray-800 border-t-2 ${borderAccent} rounded-xl p-4 flex flex-col gap-3 min-w-[200px] flex-1`}
+      className={`
+        flex-shrink-0
+        w-[285px]
+        h-[165px]
+        rounded-2xl
+        border
+        border-slate-800
+        border-t-[3px]
+        ${style.accent}
+        bg-[#111827]
+        p-5
+        flex
+        flex-col
+        transition-all
+        duration-200
+        hover:border-slate-700
+        hover:-translate-y-1
+      `}
     >
       <div>
-        <h3 className="text-sm font-semibold text-white leading-snug">{report.title}</h3>
-        <p className="text-xs text-gray-500 mt-1">By: {report.interviewer} (Interviewer)</p>
+        <h3 className="text-[15px] font-semibold text-white leading-6">
+          {report.title}
+        </h3>
+
+        <p className="mt-1 text-xs text-slate-400">
+          By {report.interviewer}
+        </p>
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="mt-4">
+
         <span
-          className={`text-xs px-2 py-0.5 rounded-full font-medium border ${
-            verdictStyles[report.verdict] ?? verdictStyles.Maybe
-          }`}
+          className={`
+            inline-flex
+            rounded-full
+            px-3
+            py-1
+            text-[11px]
+            font-medium
+            ${style.badge}
+          `}
         >
           {report.verdict}
         </span>
-        <span className={`text-lg font-bold ${scoreColor}`}>
+
+        <div
+          className={`mt-3 text-3xl font-bold ${style.score}`}
+        >
           {report.score}
-          <span className="text-xs text-gray-500 font-normal">/10</span>
-        </span>
+
+          <span className="text-lg text-slate-500">
+            /10
+          </span>
+
+        </div>
+
       </div>
 
-      <div className="flex items-center justify-between mt-auto">
-        <span className="text-xs text-gray-600">{report.date}</span>
+      <div className="mt-auto flex items-center justify-between">
+
+        <span className="text-xs text-slate-500">
+          {report.date}
+        </span>
+
         <button
-          onClick={() => onOpen?.(report)}
-          className="text-gray-500 hover:text-gray-300 transition-colors"
-          title="Open report"
+          onClick={() =>
+            onOpen?.(report)
+          }
+          className="
+            flex
+            items-center
+            gap-2
+            text-sm
+            font-medium
+            text-indigo-400
+            hover:text-indigo-300
+          "
         >
-          <ExternalLink size={14} />
+          View
+
+          <ArrowRight size={15} />
+
         </button>
+
       </div>
+
     </div>
   );
-};
+}
 
-const RecentReportsGrid = ({ reports = [], onViewAll, onOpenReport }) => {
+export default function RecentReportsGrid({
+  reports = [],
+  onViewAll,
+  onOpenReport,
+}) {
+
+  const scrollRef = useRef(null);
+
+  const scrollNext = () => {
+    scrollRef.current?.scrollBy({
+      left: 310,
+      behavior: "smooth",
+    });
+  };
+
   return (
-    <div className="bg-[#0d1117] border border-gray-800 rounded-2xl p-5">
+    <div
+      className="
+        rounded-3xl
+        border
+        border-slate-800
+        bg-[#0d1117]
+        p-6
+      "
+    >
       <DashboardSectionHeader
         icon={FileText}
-        iconColor="text-gray-400"
+        iconColor="text-slate-400"
         title="Recent Reports"
-        subtitle="Reports from your recent interviews as a candidate"
+        subtitle="AI-generated reports from completed interviews"
         viewAllLabel="View all reports"
         onViewAll={onViewAll}
       />
 
-      <div className="relative">
-        <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-gray-700">
-          {reports.map((report, idx) => (
-            <ReportCard key={idx} report={report} onOpen={onOpenReport} />
+      <div className="relative mt-6">
+
+        <div
+          ref={scrollRef}
+          className="
+            flex
+            gap-5
+            overflow-x-auto
+            scroll-smooth
+            scrollbar-hide
+            pr-12
+          "
+        >
+          {reports.map((report) => (
+            <ReportCard
+              key={report.id}
+              report={report}
+              onOpen={onOpenReport}
+            />
           ))}
         </div>
 
-        {reports.length > 3 && (
-          <button className="absolute right-0 top-1/2 -translate-y-1/2 w-7 h-7 bg-gray-800 hover:bg-gray-700 rounded-full flex items-center justify-center text-gray-400 shadow-lg transition-colors">
-            <ChevronRight size={14} />
+        {reports.length > 4 && (
+          <button
+            onClick={scrollNext}
+            className="
+              absolute
+              right-0
+              top-1/2
+              -translate-y-1/2
+
+              w-10
+              h-10
+
+              rounded-full
+
+              bg-slate-800
+              border
+              border-slate-700
+
+              flex
+              items-center
+              justify-center
+
+              text-slate-300
+
+              hover:bg-indigo-600
+              hover:border-indigo-500
+
+              transition
+            "
+          >
+            <ChevronRight size={18} />
           </button>
         )}
+
       </div>
+
     </div>
   );
-};
-
-export default RecentReportsGrid;
+}
