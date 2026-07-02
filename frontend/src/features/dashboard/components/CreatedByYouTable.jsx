@@ -19,6 +19,12 @@ const statusStyles = {
     "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30",
 };
 
+const thClass =
+  "px-6 py-4 text-left text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-400 first:pl-8 last:pr-8";
+
+const tdClass =
+  "px-6 py-7 align-middle first:pl-8 last:pr-8";
+
 const StatusBadge = ({
   status,
 }) => (
@@ -39,7 +45,7 @@ export default function CreatedByYouTable({
   const navigate = useNavigate();
 
   return (
-    <section className="rounded-3xl border border-slate-800 bg-[#0d1117] p-8">
+    <section className="rounded-3xl border border-slate-800 bg-[#0d1117] p-10">
 
       <DashboardSectionHeader
         icon={UserCircle}
@@ -50,31 +56,31 @@ export default function CreatedByYouTable({
         onViewAll={onViewAll}
       />
 
-      <div className="mt-8 overflow-x-auto">
+      <div className="mt-10 overflow-x-auto rounded-2xl border border-slate-800/70">
 
-        <table className="w-full">
+        <table className="w-full min-w-[720px] border-collapse">
 
           <thead>
 
-            <tr className="border-b border-slate-800">
+            <tr className="border-b border-slate-700/80 bg-slate-900/40">
 
-              <th className="pb-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
+              <th className={`${thClass} w-[28%]`}>
                 Interview
               </th>
 
-              <th className="pb-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
+              <th className={`${thClass} w-[22%]`}>
                 Candidate
               </th>
 
-              <th className="pb-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
+              <th className={`${thClass} w-[22%]`}>
                 Date
               </th>
 
-              <th className="pb-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
+              <th className={`${thClass} w-[14%]`}>
                 Status
               </th>
 
-              <th className="pb-4 text-right text-xs font-semibold uppercase tracking-wider text-slate-500">
+              <th className={`${thClass} w-[14%] text-right`}>
                 Action
               </th>
 
@@ -88,26 +94,26 @@ export default function CreatedByYouTable({
               (interview) => (
                 <tr
                   key={interview.id}
-                  className="border-b border-slate-800/60 hover:bg-slate-800/20 transition"
+                  className="border-b border-slate-800/50 last:border-b-0 hover:bg-slate-800/20 transition-colors"
                 >
 
-                  <td className="py-6">
+                  <td className={tdClass}>
 
-                    <div className="font-medium text-white">
+                    <div className="text-[15px] font-semibold leading-snug text-white">
                       {interview.title}
                     </div>
 
                   </td>
 
-                  <td className="py-6 text-slate-400">
+                  <td className={`${tdClass} text-sm text-slate-400`}>
                     {interview.candidate}
                   </td>
 
-                  <td className="py-6 text-slate-400 whitespace-nowrap">
+                  <td className={`${tdClass} text-sm text-slate-500 whitespace-nowrap`}>
                     {interview.dateTime}
                   </td>
 
-                  <td className="py-6">
+                  <td className={tdClass}>
 
                     <StatusBadge
                       status={interview.status}
@@ -115,7 +121,7 @@ export default function CreatedByYouTable({
 
                   </td>
 
-                  <td className="py-6">
+                  <td className={tdClass}>
 
                     <div className="flex justify-end">
 

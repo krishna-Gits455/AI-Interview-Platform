@@ -28,7 +28,7 @@ export default function DashboardActionCenter({
         border
         border-slate-800
         bg-[#0d1117]
-        p-8
+        p-10
       "
     >
       <DashboardSectionHeader
@@ -42,12 +42,12 @@ export default function DashboardActionCenter({
 
       <div
         className="
-          mt-8
+          mt-10
           grid
           grid-cols-1
+          gap-8
           md:grid-cols-2
           xl:grid-cols-4
-          gap-6
         "
       >
         {actions.length ? (

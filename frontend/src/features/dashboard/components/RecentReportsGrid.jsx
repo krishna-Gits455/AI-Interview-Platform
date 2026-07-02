@@ -150,7 +150,7 @@ export default function RecentReportsGrid({
         border
         border-slate-800
         bg-[#0d1117]
-        p-6
+        p-10
       "
     >
       <DashboardSectionHeader
@@ -162,13 +162,13 @@ export default function RecentReportsGrid({
         onViewAll={onViewAll}
       />
 
-      <div className="relative mt-6">
+      <div className="relative mt-10">
 
         <div
           ref={scrollRef}
           className="
             flex
-            gap-5
+            gap-6
             overflow-x-auto
             scroll-smooth
             scrollbar-hide

@@ -5,7 +5,7 @@ export default function AppLayout({ children }) {
     <div className="min-h-screen bg-slate-950 text-white">
       <AppNavbar />
 
-      <main className="w-full px-8 py-8">
+      <main className="w-full px-10 pt-20 pb-8">
         {children}
       </main>
     </div>

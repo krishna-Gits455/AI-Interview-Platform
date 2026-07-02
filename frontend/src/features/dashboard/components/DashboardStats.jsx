@@ -42,7 +42,7 @@ export default function DashboardStats({
   ];
 
   return (
-    <div className="grid grid-cols-2 xl:grid-cols-4 gap-6">
+    <div className="grid grid-cols-2 gap-8 xl:grid-cols-4">
       {cards.map((card) => (
         <StatCard
           key={card.label}

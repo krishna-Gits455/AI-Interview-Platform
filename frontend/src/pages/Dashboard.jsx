@@ -203,16 +203,16 @@ useEffect(() => {
  
    return (
   <AppLayout>
-    <div className="flex gap-8 items-start">
+    <div className="flex items-start gap-10">
 
       <DashboardSidebar
   activeSection={activeSection}
   onSectionChange={setActiveSection}
 />
 
-      <div className="flex-1 space-y-8">
+      <div className="flex min-w-0 flex-1 flex-col gap-10">
 
-        <section id="overview">
+        <section id="overview" className="mt-8 scroll-mt-40">
           <DashboardHero
             onCreateInterview={() =>
               setShowModal(true)
@@ -220,31 +220,31 @@ useEffect(() => {
           />
         </section>
 
-        <section id="stats">
+        <section id="stats" className="scroll-mt-40">
     <DashboardStats
         stats={stats}
     />
 </section>
 
-        <section id="actions">
+        <section id="actions" className="scroll-mt-40">
           <DashboardActionCenter
             actions={actionItems}
           />
         </section>
 
-        <section id="created">
+        <section id="created" className="scroll-mt-40">
           <CreatedByYouTable
             interviews={createdByYou}
           />
         </section>
 
-        <section id="assigned">
+        <section id="assigned" className="scroll-mt-40">
           <AssignedToYouTable
             interviews={assignedToYou}
           />
         </section>
 
-        <section id="reports">
+        <section id="reports" className="scroll-mt-40">
           <RecentReportsGrid
             reports={recentReports}
           />

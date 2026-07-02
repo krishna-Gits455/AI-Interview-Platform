@@ -75,16 +75,17 @@ export default function DashboardSidebar({
     <aside
       className={`
         sticky
-        top-24
+        top-[8.5rem]
         self-start
+        shrink-0
 
         ${
           collapsed
-            ? "w-20"
-            : "w-72"
+            ? "w-[4.5rem]"
+            : "w-80"
         }
 
-        h-[calc(100vh-7rem)]
+        h-[calc(100vh-8.5rem-2rem)]
 
         rounded-3xl
         border
@@ -101,29 +102,29 @@ export default function DashboardSidebar({
     >
       {/* Header */}
 
-      <div className="border-b border-slate-800 px-6 py-6">
+      <div className="border-b border-slate-800 px-7 py-7">
 
         <div
           className={`flex ${
             collapsed
               ? "justify-center"
-              : "items-center gap-3"
+              : "items-center gap-4"
           }`}
         >
-          <div className="h-11 w-11 rounded-xl bg-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-900/40">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-indigo-600 shadow-lg shadow-indigo-900/40">
             <LayoutDashboard
-              size={20}
+              size={22}
               className="text-white"
             />
           </div>
 
           {!collapsed && (
             <div>
-              <h3 className="text-base font-semibold text-white">
+              <h3 className="text-lg font-semibold text-white">
                 Dashboard
               </h3>
 
-              <p className="text-xs text-slate-500 mt-1">
+              <p className="mt-1 text-sm text-slate-500">
                 Navigation
               </p>
             </div>
@@ -134,7 +135,7 @@ export default function DashboardSidebar({
 
       {/* Navigation */}
 
-      <nav className="flex-1 px-3 py-5 space-y-2">
+      <nav className="flex-1 space-y-2 px-4 py-6">
 
         {navItems.map(
           ({
@@ -166,14 +167,14 @@ export default function DashboardSidebar({
                   ${
                     collapsed
                       ? "justify-center px-0"
-                      : "gap-4 px-4"
+                      : "gap-4 px-5"
                   }
 
-                  py-3.5
+                  py-4
 
                   rounded-xl
 
-                  text-sm
+                  text-[15px]
                   font-medium
 
                   transition-all
@@ -187,14 +188,15 @@ export default function DashboardSidebar({
                 `}
               >
                 <Icon
-                  size={20}
+                  size={22}
                   strokeWidth={
                     1.8
                   }
+                  className="shrink-0"
                 />
 
                 {!collapsed && (
-                  <span>
+                  <span className="truncate">
                     {label}
                   </span>
                 )}
@@ -207,7 +209,7 @@ export default function DashboardSidebar({
 
       {/* Bottom */}
 
-      <div className="mt-auto border-t border-slate-800 p-3">
+      <div className="mt-auto border-t border-slate-800 p-4">
 
         <button
           onClick={() =>
@@ -223,14 +225,14 @@ export default function DashboardSidebar({
             ${
               collapsed
                 ? "justify-center"
-                : "items-center gap-3 px-3"
+                : "items-center gap-3 px-4"
             }
 
-            py-3
+            py-3.5
 
             rounded-xl
 
-            text-sm
+            text-[15px]
 
             text-slate-400
 
@@ -242,12 +244,12 @@ export default function DashboardSidebar({
         >
           {collapsed ? (
             <ChevronRight
-              size={18}
+              size={20}
             />
           ) : (
             <>
               <ChevronLeft
-                size={18}
+                size={20}
               />
               Collapse
             </>

@@ -13,8 +13,8 @@ const StatCard = ({
         border
         border-slate-800
         bg-[#111827]
-        px-7
-        py-6
+        px-8
+        py-7
         transition-all
         duration-200
         hover:border-violet-500/30
